@@ -4,7 +4,7 @@ pygame.init()
 
 from src.Dependencies import *
 from src.Constants import *
-from src.Recourses import *
+from src.Resources import *
 
 class GameMain:
     def __init__(self):
