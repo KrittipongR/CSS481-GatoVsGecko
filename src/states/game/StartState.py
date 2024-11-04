@@ -1,8 +1,8 @@
-from src.states.BastState import BaseState
+from src.states.BaseState import BaseState
 import pygame, sys
 
 from src.Constants import *
-from src.Recourses import *
+from src.Resources import *
 
 class StartState(BaseState):
     def __init__(self):

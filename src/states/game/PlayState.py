@@ -1,9 +1,9 @@
 import pygame, sys
-from src.Recourses import *
+from src.Resources import *
 from src.Dependencies import *
 from src.Constants import *
 from src.StateMachine import *
-from src.states.BastState import *
+from src.states.BaseState import *
 
 
 class PlayState(BaseState):
