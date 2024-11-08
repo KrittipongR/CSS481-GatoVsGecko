@@ -3,15 +3,26 @@ import pygame, sys
 
 from src.Constants import *
 from src.Resources import *
+from src.Util import Button
+
+def draw_text(text, font, text_col):
+    img = gFonts[font].render(text, False, text_col)
+    return img
 
 class StartState(BaseState):
     def __init__(self):
+        self.t_play = 'PLAY'
+        self.btn_play = Button(draw_text(self.t_play, 'medium', (255,255,0)),(WIDTH/2-(len(self.t_play)/2)*24),(HEIGHT/2 + 96))
         pass
 
     def Enter(self, params):
         pass
 
     def update(self, dt, events):
+
+        if self.btn_play.clicked:
+            g_state_machine.Change('play')
+
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -28,9 +39,7 @@ class StartState(BaseState):
         rect = t_title.get_rect(center = (WIDTH/2, HEIGHT/2))
         screen.blit(t_title,rect)
 
-        t_press_enter = gFonts['small'].render("Press Enter", False, (255,255,255))
-        rect = t_press_enter.get_rect(center=(WIDTH/2, HEIGHT/2 + 96))
-        screen.blit(t_press_enter,rect)
+        self.btn_play.render(screen)
 
     def Exit(self):
-        pass
+        gSounds['select'].play()

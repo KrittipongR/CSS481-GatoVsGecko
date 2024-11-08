@@ -82,8 +82,6 @@ class Sprite:
         self.image = image
         self.animation = animation
 
-
-
 class SpriteManager:
     def __init__(self):
         self.spriteCollection = self.loadSprites(
@@ -194,3 +192,33 @@ class SpriteSheet(object):
         return pygame.transform.scale(
             image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
         )
+    
+class Button():
+    def __init__(self, image, x, y):
+        self.image = image
+        width = image.get_width()
+        height = image.get_height
+        # self.image = pygame.transform.scale(image, (int(width*scale),int(height*scale)))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+        self.clicked = False
+        self.hover = False
+
+    def render(self,screen):
+        action = False
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos):
+            self.hover = True
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = True
+        else: self.hover = False
+
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
+    
