@@ -11,18 +11,19 @@ def draw_text(text, font, text_col):
 
 class StartState(BaseState):
     def __init__(self):
+        # Initialize the play button
         self.t_play = 'PLAY'
-        self.btn_play = Button(draw_text(self.t_play, 'medium', (255,255,0)),(WIDTH/2-(len(self.t_play)/2)*24),(HEIGHT/2 + 96))
-        pass
+        self.btn_play = Button(draw_text(self.t_play, 'medium', (255, 255, 0)), (WIDTH / 2 - (len(self.t_play) / 2) * 24), (HEIGHT / 2 + 96))
 
     def Enter(self, params):
         pass
 
     def update(self, dt, events):
-
-        if self.btn_play.clicked:
+        # Check if the play button is clicked
+        if self.btn_play.update():
             g_state_machine.Change('play')
 
+        # Process input events
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -35,10 +36,12 @@ class StartState(BaseState):
                     g_state_machine.Change('play')
 
     def render(self, screen):
-        t_title = gFonts['large'].render("Gato vs Gecko", False, (255,255,255))
-        rect = t_title.get_rect(center = (WIDTH/2, HEIGHT/2))
-        screen.blit(t_title,rect)
+        # Render the title
+        t_title = gFonts['large'].render("Gato vs Gecko", False, (255, 255, 255))
+        rect = t_title.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+        screen.blit(t_title, rect)
 
+        # Render the play button
         self.btn_play.render(screen)
 
     def Exit(self):
