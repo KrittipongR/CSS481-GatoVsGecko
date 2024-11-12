@@ -1,0 +1,35 @@
+{
+    "spriteSheetURL": "./graphics/icons.png",
+    "type": "none",
+    "size": [50, 50],
+    "sprites": [
+        {
+            "name": "arrow_left",
+            "x": 100,
+            "y": 50,
+            "scalefactor": 1.5,
+            "colorKey": -1
+        },
+        {
+            "name": "arrow_right",
+            "x": 150,
+            "y": 50,
+            "scalefactor": 1.5,
+            "colorKey": -1
+        },
+        {
+            "name": "arrow_up",
+            "x": 200,
+            "y": 50,
+            "scalefactor": 1.5,
+            "colorKey": -1
+        },
+        {
+            "name": "arrow_down",
+            "x": 250,
+            "y": 50,
+            "scalefactor": 1.5,
+            "colorKey": -1
+        }
+    ]
+}

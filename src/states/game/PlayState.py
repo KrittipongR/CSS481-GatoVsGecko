@@ -79,6 +79,8 @@ class PlayState(BaseState):
         self.btn_shop.render(screen)
         self.btn_inv.render(screen)
         self.btn_setting.render(screen)
+
+        screen.blit(gIcon_image_list[1], (60, 60)) # test rendering left arrow
     
     def Exit(self):
         pass
