@@ -1,5 +1,6 @@
 import pygame
 import json
+from src.Resources import *
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
