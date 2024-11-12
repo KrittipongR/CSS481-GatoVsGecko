@@ -5,6 +5,7 @@ from src.Constants import *
 from src.StateMachine import *
 from src.states.BaseState import *
 from src.Util import Button
+from src.world.Stage import Stage
 
 def draw_text(text, font, text_col):
     img = gFonts[font].render(text, False, text_col)
@@ -22,6 +23,9 @@ class PlayState(BaseState):
         self.btn_inv = Button(draw_text(self.t_inv, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 4))
         self.t_setting = 'SETTINGS'
         self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (HEIGHT - 48))
+
+        #Init Stage
+        self.stage = Stage()
 
     def Enter(self, params):
         pass
@@ -80,12 +84,17 @@ class PlayState(BaseState):
         
         # Button hovering
         self.buttonHover()
+
+        self.stage.update(dt, events)
     
     def render(self, screen):
+
+        self.stage.render(screen, -TILE_SIZE*2, 0)
+
         # Render the title
-        t_title = gFonts['small'].render("This is the play state", False, (255, 255, 255))
-        rect = t_title.get_rect(center=(WIDTH / 2, HEIGHT / 2))
-        screen.blit(t_title, rect)
+        # t_title = gFonts['small'].render("This is the play state", False, (255, 255, 255))
+        # rect = t_title.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+        # screen.blit(t_title, rect)
 
         # Side menu bar
         t_wave = 'Wave 1'
@@ -98,7 +107,7 @@ class PlayState(BaseState):
         self.btn_setting.render(screen)
 
         # Example of additional rendering
-        screen.blit(gIcon_image_list[1], (60, 60))  # Render a left arrow icon
+        # screen.blit(gIcon_image_list[1], (60, 60))  # Render a left arrow icon
 
     def Exit(self):
         pass
