@@ -15,7 +15,8 @@ class GameMain:
         states = {
             'start': StartState(),
             'play' : PlayState(),
-            'game_over': GameOverState()
+            'game_over': GameOverState(),
+            'shop': ShopState()
         }
 
         g_state_machine.SetStates(states)
