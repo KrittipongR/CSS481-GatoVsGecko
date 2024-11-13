@@ -28,9 +28,6 @@ class ShopState(BaseState):
             {"name": "Shield", "cost": 75}
         ]
         
-        # Initialize the selected_index to track which item is currently selected
-        self.selected_index = 0  # Start with the first item selected
-        
         # Initialize buttons for each item
         self.item_buttons = [
             Button(draw_text(f"{item['name']} - {item['cost']} coins", 'small', (255, 255, 255)), WIDTH // 2 - 100, 150 + i * 40)
@@ -58,30 +55,6 @@ class ShopState(BaseState):
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                elif event.key == pygame.K_DOWN:
-                    # Move down to the next item
-                    self.selected_index = (self.selected_index + 1) % len(self.items)
-                elif event.key == pygame.K_UP:
-                    # Move up to the previous item
-                    self.selected_index = (self.selected_index - 1) % len(self.items)
-                elif event.key == pygame.K_RETURN:
-                    selected_item = self.items[self.selected_index]
-                    if selected_item["name"] == "Loot Box":
-                        # Loot Box purchase logic
-                        loot_item = random.choice(self.loot_box_pool)
-                        print(f"Congratulations! You won a {loot_item['name']} from the Loot Box!")
-                        self.last_item_bought = loot_item  # Store the item
-                        self.item_display_time = pygame.time.get_ticks()  # Store the time it was bought
-                        gSounds['select'].play()  # Play 'select' sound when an item is bought
-                        # Update the selected index to the last bought item
-                        self.selected_index = 3  # Update index based on loot box item
-                    else:
-                        print(f"Attempting to purchase {selected_item['name']} for {selected_item['cost']} coins.")
-                        self.last_item_bought = selected_item  # Store the item
-                        self.item_display_time = pygame.time.get_ticks()  # Store the time it was bought
-                        gSounds['select'].play()  # Play 'select' sound when an item is bought
-                        # Update the selected index to the last bought item
-                        self.selected_index = self.items.index(selected_item)  # Update index based on purchased item
 
         # Check if any item button is clicked
         for i, button in enumerate(self.item_buttons):
@@ -102,15 +75,11 @@ class ShopState(BaseState):
                     self.last_item_bought = loot_item  # Store the item
                     self.item_display_time = pygame.time.get_ticks()  # Store the time it was bought
                     gSounds['select'].play()  # Play 'select' sound when an item is bought
-                    # Update the selected index to the last bought item
-                    self.selected_index = 3  # Update index based on loot box item
                 else:
                     print(f"Attempting to purchase {selected_item['name']} for {selected_item['cost']} coins.")
                     self.last_item_bought = selected_item  # Store the item
                     self.item_display_time = pygame.time.get_ticks()  # Store the time it was bought
                     gSounds['select'].play()  # Play 'select' sound when an item is bought
-                    # Update the selected index to the last bought item
-                    self.selected_index = self.items.index(selected_item)  # Update index based on purchased item
 
         # Check if back button is clicked
         if self.back_button.update():
@@ -131,14 +100,10 @@ class ShopState(BaseState):
 
         # Render item buttons
         for i, button in enumerate(self.item_buttons):
-            # If the item is selected by arrow keys, override hover effect
-            if i == self.selected_index:
-                button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 0))
-            elif button.hover:
-                # Only highlight the button if it's hovered, and not selected by arrow keys
+            # Highlight button on hover
+            if button.hover:
                 button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 0))
             else:
-                # Default color if neither selected nor hovered
                 button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 255))
             
             button.render(screen)
