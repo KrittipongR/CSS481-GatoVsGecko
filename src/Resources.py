@@ -16,7 +16,7 @@ gIcon_image_list = [sprite_collection["arrow_right"].image, sprite_collection["a
                     sprite_collection["A"].image, sprite_collection["B"].image,
                     sprite_collection["X"].image, sprite_collection["Y"].image]
 
-gStage_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16)
+gStage_image_list = Util.GenerateTiles("./graphics/tilesheet_2.png", 16, 16)
 gDoor_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16, colorkey=(13, 7, 17, 255))
 
 gFonts ={

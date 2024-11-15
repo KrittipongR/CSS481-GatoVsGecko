@@ -21,7 +21,7 @@ class Doorway:
 
     def render(self, screen, offset_x, offset_y):
         transparent_door_image = gDoor_image_list
-        door_image = gStage_image_list
+        door_image = gDoor_image_list
 
         self.x = self.x + offset_x
         self.y = self.y + offset_y

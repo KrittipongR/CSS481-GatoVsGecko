@@ -2,10 +2,11 @@ import pygame, random
 
 from src.Constants import *
 from src.Dependencies import *
+from src.Resources import *
 from src.world.Doorway import Doorway
 
 # from src.states.entity.EntityDieState import EntityDieState
-from src.states.entity.EntityWalkState import EntityWalkState
+# from src.states.entity.EntityWalkState import EntityWalkState
 
 from src.StateMachine import StateMachine
 # from src.GameObject import GameObject
@@ -23,10 +24,10 @@ class Stage:
         self.GenerateEntities()
 
         self.objects = []
-        self.GenerateObjects()
+        # self.GenerateObjects()
 
         self.doorways = []
-        self.doorways.append(Doorway('left', False, self))
+        #self.doorways.append(Doorway('left', False, self))
         self.doorways.append(Doorway('right', False, self))
         
         # centering the dungeon rendering
@@ -77,7 +78,11 @@ class Stage:
         for y in range(self.height):
             for x in range(self.width):
                 tile_id = self.tiles[y][x]
-                screen.blit(gStage_image_list[tile_id-1], (x * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod,
+                if tile_id == 78 or tile_id == 97 or tile_id == 116:
+                    screen.blit(gDoor_image_list[tile_id-1], (x * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod,
+                            y * TILE_SIZE + self.render_offset_y + self.adjacent_offset_y + y_mod))
+                else:
+                    screen.blit(gStage_image_list[tile_id-1], (x * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod,
                             y * TILE_SIZE + self.render_offset_y + self.adjacent_offset_y + y_mod))
 
         for doorway in self.doorways:
