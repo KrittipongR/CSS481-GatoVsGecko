@@ -249,13 +249,14 @@ class Template:
         try:
             with open(self.path, 'r') as f:
                 data = json.load(f)
-
-            sprite_collection = SpriteManager(path=self.path).spriteCollection
-            self.sprite = sprite_collection[self.type + str(template_id)].image
+                
             # Iterating through the json list
             for template in data["templates"]:
                 if self.type + str(template_id) == template["name"]:
                     self.data = template
+                    break
+            else:
+                self.data = None
 
         except FileNotFoundError:
             print(f"Error: The file {self.path} was not found.")
