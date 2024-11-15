@@ -4,6 +4,7 @@ from src.Constants import *
 from src.Dependencies import *
 from src.Resources import *
 from src.world.Doorway import Doorway
+from src.world.Gecko import Gecko
 
 # from src.states.entity.EntityDieState import EntityDieState
 # from src.states.entity.EntityWalkState import EntityWalkState
@@ -21,7 +22,7 @@ class Stage:
         self.GenerateWallsAndFloors()
 
         self.entities = []
-        self.GenerateEntities()
+        # self.GenerateEntities()
 
         self.objects = []
         # self.GenerateObjects()
@@ -67,10 +68,13 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self):
+    def GenerateEntities(self, wave=1):
+        self.entities.append(Gecko(template_id=random.randint(1,3), pos=(0, HEIGHT/2)))
         pass
 
     def update(self, dt, events):
+        for entity in self.entities:
+            entity.update(dt, events)
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
 
@@ -90,3 +94,6 @@ class Stage:
 
         for object in self.objects:
             object.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
+
+        for entity in self.entities:
+            entity.render(screen)

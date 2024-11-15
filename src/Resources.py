@@ -5,7 +5,7 @@ from src.StateMachine import *
 
 g_state_machine = StateMachine()
 
-sprite_collection = SpriteManager().spriteCollection
+sprite_collection = SpriteManager(path="./sprites/Icon.json").spriteCollection
 
 gIcon_image_list = [sprite_collection["arrow_right"].image, sprite_collection["arrow_left"].image,
                     sprite_collection["arrow_up"].image, sprite_collection["arrow_down"].image,

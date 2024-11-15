@@ -25,6 +25,7 @@ class PlayState(BaseState):
         self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (HEIGHT - 48))
 
         #Init Stage
+        self.wave = 1
         self.stage = Stage()
 
     def Enter(self, params):
@@ -57,6 +58,7 @@ class PlayState(BaseState):
         if self.btn_ready.update():
             gSounds['select'].play()
             print("Ready button clicked")  # Example action
+            self.stage.GenerateEntities(wave=self.wave)
         
         if self.btn_shop.update():
             gSounds['select'].play()

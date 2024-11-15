@@ -84,10 +84,11 @@ class Sprite:
         self.animation = animation
 
 class SpriteManager:
-    def __init__(self):
+    def __init__(self, path):
         self.spriteCollection = self.loadSprites(
             [
-                "./sprites/Icon.json"
+                # "./sprites/Icon.json"
+                path
             ]
         )
 
@@ -98,9 +99,13 @@ class SpriteManager:
                 data = json.load(jsonData)
                 mySpritesheet = SpriteSheet(data["spriteSheetURL"])
                 dic = {}
+                try:
+                    spriteList = data["sprites"]
+                except KeyError:
+                    spriteList = data["templates"]
 
                 if data["type"] == "animation":
-                    for sprite in data["sprites"]:
+                    for sprite in spriteList:
                         images = []
                         for image in sprite["images"]:
                             try:
@@ -143,7 +148,7 @@ class SpriteManager:
                     resDict.update(dic)
                     continue
                 else:
-                    for sprite in data["sprites"]:
+                    for sprite in spriteList:
                         try:
                             colorkey = sprite["colorKey"]
                         except KeyError:
@@ -225,4 +230,37 @@ class Button():
         # Draw the button image on the screen
         screen.blit(self.image, self.rect.topleft)
 
-    
+import json
+
+class Template:
+    def __init__(self, type, template_id=1):
+        self.type = type
+        match self.type:
+            case "gecko":
+                self.path = "./src/data/Gecko.json"
+            case "gato":
+                self.path = "./src/data/Gato.json"
+
+        self.load_template(template_id)
+
+
+        # Loads JSON object as a dictionary
+    def load_template(self, template_id):
+        try:
+            with open(self.path, 'r') as f:
+                data = json.load(f)
+
+            sprite_collection = SpriteManager(path=self.path).spriteCollection
+            self.sprite = sprite_collection[self.type + str(template_id)].image
+            # Iterating through the json list
+            for template in data["templates"]:
+                if self.type + str(template_id) == template["name"]:
+                    self.data = template
+
+        except FileNotFoundError:
+            print(f"Error: The file {self.path} was not found.")
+            return None
+
+        except json.decoder.JSONDecodeError:
+            print(f"Error: Failed to decode the template {self.path} file.")
+            return None
