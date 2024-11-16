@@ -120,4 +120,4 @@ class ShopState(BaseState):
                 screen.blit(item_text, item_rect)
 
     def Exit(self):
-        gSounds['select'].play()
+        pass

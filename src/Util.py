@@ -1,6 +1,7 @@
 import pygame
 import json
 from src.Resources import *
+from src.Constants import *
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -249,7 +250,7 @@ class Template:
         try:
             with open(self.path, 'r') as f:
                 data = json.load(f)
-                
+
             # Iterating through the json list
             for template in data["templates"]:
                 if self.type + str(template_id) == template["name"]:
@@ -265,3 +266,8 @@ class Template:
         except json.decoder.JSONDecodeError:
             print(f"Error: Failed to decode the template {self.path} file.")
             return None
+
+def convertGridToCoords(row, col):  # The output coordinates will be at the center of the grid, NOT TOP-LEFT
+    y = row * TILE_SIZE + (TILE_SIZE / 2)
+    x = col * TILE_SIZE + (TILE_SIZE / 2)
+    return (x, y)

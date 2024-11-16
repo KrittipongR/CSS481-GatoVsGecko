@@ -1,5 +1,6 @@
 from src.world.Node import Node
 from src.Constants import *
+import random
 
 class NodeManager:
     
@@ -41,7 +42,6 @@ class NodeManager:
                     if range(max(nextNode.row1, node.row1), min(nextNode.row2, node.row2)+1) and nextNode not in node.connections: # Checks if two number ranges intersect
                         newConnection = True
                         node.connect(nextNode)
-                        nextNode.isOrphaned = False
         return newConnection
 
     def pathFind(self, node, path):         # Recursion fun
@@ -61,12 +61,19 @@ class NodeManager:
         return (path, pathFound)
 
     def nodeConnectionLoop(self):
-        root = sorted(self.nodeList, key=lambda x: x.col)[0]
-        while not (pathResult := self.pathFind(root, []))[0]:
-            if not (self.updateConnection("right") or self.updateConnection("left")): # No new connections either way and still no path
-                print("-- No path found, the algorithm has halted --")
-                return None
-        self.currentPath = pathResult[0]
+        roots = [node for node in self.nodeList if node.col == 0]
+        random.shuffle(roots)               # Why not
+        for root in roots:                  # This loop is cursed, sorry
+            while not (pathResult := self.pathFind(root, []))[1]:
+                if not (self.updateConnection("right") or self.updateConnection("left")): # No new connections either way and still no path
+                    break
+            else:   # Path is found
+                self.currentPath = pathResult[0]
+                break
+        else:
+            print("-- No path found, the algorithm has halted --")
+            print("No fallback yet so the program is going to crash right now.")
+            self.currentPath = None
                 
             
     def addBlock(self, row, col):   # Splits the node the block (tower/blockade) is on into two nodes
