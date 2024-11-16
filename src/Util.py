@@ -119,7 +119,7 @@ class SpriteManager:
                                     image["x"],
                                     image["y"],
                                     image["scale"],
-                                    colorkey=-1, #sprite["colorKey"],
+                                    colorkey=sprite["colorKey"],
                                     xTileSize=xSize,
                                     yTileSize=ySize,
                                 )
@@ -130,7 +130,7 @@ class SpriteManager:
                                 idle_info["x"],
                                 idle_info["y"],
                                 idle_info["scale"],
-                                colorkey=-1,
+                                colorkey=sprite["colorkey"],
                                 xTileSize=xSize,
                                 yTileSize=ySize
                             )
