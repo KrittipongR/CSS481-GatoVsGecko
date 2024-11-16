@@ -41,5 +41,4 @@ class Gecko:
 
     def render(self, screen):
         self.sprite = self.sprite_collection[self.sprite_name].animation.image
-        print(self.sprite)
         screen.blit(self.sprite, (self.x, self.y))
