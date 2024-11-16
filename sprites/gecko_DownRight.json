@@ -38,7 +38,7 @@
             "colorKey": null
         },
         {
-            "name":"gigaGecko_walk_down",
+            "name":"jinglen_walk_down",
             "images":[
                 {
                     "x":0,
@@ -72,7 +72,7 @@
             "colorKey": null
         },
         {
-            "name":"chameleon_walk_down",
+            "name":"gigaGecko_walk_down",
             "images":[
                 {
                     "x":0,
@@ -106,7 +106,7 @@
             "colorKey": null
         },
 	   {
-            "name":"jinglen_walk_down",
+            "name":"chameleon_walk_down",
             "images":[
                 {
                     "x":0,

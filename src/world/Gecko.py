@@ -10,9 +10,9 @@ class Gecko:
     }
     names = {
         1: "gecko",
-        2: "gigaGecko",
-        3: "chameleon",
-        4: "jinglen"
+        2: "jinglen",
+        3: "gigaGecko",
+        4: "chameleon"
     }
 
     def __init__(self, template_id=1, pos=(0,0)):
