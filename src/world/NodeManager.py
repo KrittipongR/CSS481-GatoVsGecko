@@ -72,11 +72,12 @@ class NodeManager:
                 break
         else:
             print("-- No path found, the algorithm has halted --")
-            print("No fallback yet so the program is going to crash right now.")
+            print("Falling back to previous path.")
             self.currentPath = None
                 
             
     def addBlock(self, row, col):   # Splits the node the block (tower/blockade) is on into two nodes
+        self.previousPath = self.currentPath.copy()
         for node in self.getNodesByColumn(col):
             if row in range(node.row1, node.row2+1):
                 if node.row1 < row:
@@ -87,6 +88,10 @@ class NodeManager:
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
                 break
+        if self.currentPath is None:
+            self.currentPath = self.previousPath.copy()
+            return False
+        return True     # Good enough for now?
 
     def getNodesByColumn(self, col):
         return [node for node in self.nodeList if node.col == col]

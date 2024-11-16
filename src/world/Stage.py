@@ -23,6 +23,7 @@ class Stage:
         self.tiles = []
         self.GenerateWallsAndFloors()
 
+        self.geckoQueue = []
         self.geckos = []
         # self.GenerateEntities()
 
@@ -39,6 +40,8 @@ class Stage:
 
         self.adjacent_offset_x = 0
         self.adjacent_offset_y = 0
+
+        self.state = 0
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
         Gecko.setPath(self.nodeManager.currentPath)
@@ -74,32 +77,40 @@ class Stage:
                 self.tiles[y - 1].append(id)
 
     def GenerateEntities(self, wave=1):
+        #self.geckoQueue.append(...)
+        self.state = 1
         self.geckos.append(Gecko(template_id=random.randint(1,3)))
         pass
 
     def placeObject(self, row, col, type):      # Tower and Blockade
-        self.nodeManager.addBlock(row, col)
-        Gecko.setPath(self.nodeManager.currentPath)
-        pass
+        if self.state == 0 and self.nodeManager.addBlock(row, col):
+            Gecko.setPath(self.nodeManager.currentPath)
+        else:
+            return False
 
     def update(self, dt, events):
-        for gecko in self.geckos:
-            gecko.update(dt, events)
-            if gecko.hp <= 0:
-                self.geckos.remove(gecko)
+        if not self.geckoQueue and not self.geckos:
+            self.state = 0
+        else:            
+            for gecko in self.geckos:
+                gecko.update(dt, events)
+                if gecko.hp <= 0:
+                    self.geckos.remove(gecko)
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
 
     def render(self, screen, x_mod, y_mod):
-        for y in range(self.height):
-            for x in range(self.width):
-                tile_id = self.tiles[y][x]
+        for row in range(self.height):
+            for col in range(self.width):
+                tile_id = self.tiles[row][col]
+                x = col * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod
+                y = row * TILE_SIZE + self.render_offset_y + self.adjacent_offset_y + y_mod
                 if tile_id == 78 or tile_id == 97 or tile_id == 116:
-                    screen.blit(gDoor_image_list[tile_id-1], (x * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod,
-                            y * TILE_SIZE + self.render_offset_y + self.adjacent_offset_y + y_mod))
+                    tileImageList = gDoor_image_list
                 else:
-                    screen.blit(gStage_image_list[tile_id-1], (x * TILE_SIZE + self.render_offset_x + self.adjacent_offset_x + x_mod,
-                            y * TILE_SIZE + self.render_offset_y + self.adjacent_offset_y + y_mod))
+                    tileImageList = gStage_image_list
+                screen.blit(tileImageList[tile_id-1], (x, y))
+                pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, TILE_SIZE, TILE_SIZE), 1)
 
         for doorway in self.doorways:
             doorway.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)

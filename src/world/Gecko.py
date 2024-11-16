@@ -11,7 +11,6 @@ class Gecko:
         currentNode = 0
         maxLength = 0
         bestRow = 0
-        print(len(path))
         while currentNode < len(path) - 1:
             for row in range(path[currentNode].row1, path[currentNode].row2 + 1):
                 i = 1
@@ -20,9 +19,9 @@ class Gecko:
                 if i > maxLength:
                     maxLength = i
                     bestRow = row
-            Gecko.waypoints.append(convertGridToCoords(bestRow, path[currentNode].col))
+            Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode].col)))
             if maxLength > 1:
-                Gecko.waypoints.append(convertGridToCoords(bestRow, path[currentNode + maxLength - 1].col))
+                Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
         print(Gecko.waypoints)
 
@@ -86,5 +85,5 @@ class Gecko:
         self.sprite_collection[self.sprite_name].animation.update(dt)
 
     def render(self, screen):
-        self.sprite = self.sprite_collection[self.sprite_name].animation.image
+        self.sprite = pygame.transform.scale(self.sprite_collection[self.sprite_name].animation.image, (TILE_SIZE, TILE_SIZE))
         screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))

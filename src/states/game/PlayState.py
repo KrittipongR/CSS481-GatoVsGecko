@@ -7,6 +7,8 @@ from src.states.BaseState import *
 from src.Util import Button
 from src.world.Stage import Stage
 
+from src.Util import convertGridToCoords, convertCoordsToGrid
+
 def draw_text(text, font, text_col):
     img = gFonts[font].render(text, False, text_col)
     return img
@@ -16,23 +18,27 @@ class PlayState(BaseState):
     def __init__(self):
         # Button initializations
         self.t_ready = 'READY'
-        self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 2))
+        self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 2))
         self.t_shop = 'SHOP'
-        self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 3))
+        self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
         self.t_sword = 'SWORD'
-        self.btn_sword = Button(draw_text(self.t_sword, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 4))
+        self.btn_sword = Button(draw_text(self.t_sword, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
         self.t_arrow = 'ARROW'
-        self.btn_bomb = Button(draw_text(self.t_arrow, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 5))
+        self.btn_bomb = Button(draw_text(self.t_arrow, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 5))
         self.t_bomb = 'BOMB'
-        self.btn_sniper = Button(draw_text(self.t_bomb, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 6))
+        self.btn_sniper = Button(draw_text(self.t_bomb, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 6))
         self.t_sniper = 'SNIPER'
-        self.btn_arrow = Button(draw_text(self.t_sniper, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (48 * 7))
+        self.btn_arrow = Button(draw_text(self.t_sniper, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
+        self.t_blockade = 'BLOCKADE'
+        self.btn_blockade = Button(draw_text(self.t_blockade, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
         self.t_setting = 'SETTINGS'
-        self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10)), (HEIGHT - 48))
+        self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (HEIGHT - 48))
 
         #Init Stage
         self.wave = 1
         self.stage = Stage()
+
+        self.selectedPlaceable = None
 
     def Enter(self, params):
         pass
@@ -69,6 +75,11 @@ class PlayState(BaseState):
         else:
             self.btn_sniper.image = draw_text(self.t_sniper, 'small', (255, 255, 255))
 
+        if self.btn_blockade.hover:
+            self.btn_blockade.image = draw_text(self.t_blockade, 'small', (255, 255, 0))
+        else:
+            self.btn_blockade.image = draw_text(self.t_blockade, 'small', (255, 255, 255))
+
         if self.btn_setting.hover:
             self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 0))
         else:
@@ -100,6 +111,11 @@ class PlayState(BaseState):
         if self.btn_sniper.update():
             gSounds['select'].play()
             print("Sniper button clicked")  # Example action
+
+        if self.btn_blockade.update():
+            gSounds['select'].play()
+            print("Blockade button clicked")  # Example action
+            self.selectedPlaceable = "blockade"
         
         if self.btn_setting.update():
             gSounds['select'].play()
@@ -116,6 +132,14 @@ class PlayState(BaseState):
                     sys.exit()
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('game_over')
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None:
+                    if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
+                        self.selectedPlaceable = None
+                    else:   # placement is rejected
+                        pass
+
         
         # Button hovering
         self.buttonHover()
@@ -142,6 +166,7 @@ class PlayState(BaseState):
         self.btn_arrow.render(screen)
         self.btn_bomb.render(screen)
         self.btn_sniper.render(screen)
+        self.btn_blockade.render(screen)
         self.btn_setting.render(screen)
 
         # Example of additional rendering

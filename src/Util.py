@@ -267,7 +267,14 @@ class Template:
             print(f"Error: Failed to decode the template {self.path} file.")
             return None
 
-def convertGridToCoords(row, col):  # The output coordinates will be at the center of the grid, NOT TOP-LEFT
-    y = row * TILE_SIZE + (TILE_SIZE / 2)
-    x = col * TILE_SIZE + (TILE_SIZE / 2)
+def convertGridToCoords(grid):  # The output coordinates will be at the center of the grid, NOT TOP-LEFT
+    y = grid[0] * TILE_SIZE + (TILE_SIZE / 2)
+    x = grid[1] * TILE_SIZE + (TILE_SIZE / 2)
     return (x, y)
+
+def convertCoordsToGrid(coords):
+    if coords[0] in range(0, MAP_WIDTH * TILE_SIZE) and coords[1] in range(0, MAP_HEIGHT * TILE_SIZE):
+        row = coords[0] // TILE_SIZE
+        col = coords[1] // TILE_SIZE
+        return (row, col)
+    return None
