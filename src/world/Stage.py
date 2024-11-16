@@ -23,7 +23,7 @@ class Stage:
         self.tiles = []
         self.GenerateWallsAndFloors()
 
-        self.entities = []
+        self.geckos = []
         # self.GenerateEntities()
 
         self.objects = []
@@ -40,7 +40,9 @@ class Stage:
         self.adjacent_offset_x = 0
         self.adjacent_offset_y = 0
 
-        self.nodeManager = NodeManager(MAP_GRID_ROWS, MAP_GRID_COLS)
+        self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
+        Gecko.setPath(self.nodeManager.currentPath)
+
     def GenerateWallsAndFloors(self):
         for y in range(1, self.height + 1):
             self.tiles.append([])
@@ -72,12 +74,19 @@ class Stage:
                 self.tiles[y - 1].append(id)
 
     def GenerateEntities(self, wave=1):
-        self.entities.append(Gecko(template_id=random.randint(1,3), pos=(0, HEIGHT/2)))
+        self.geckos.append(Gecko(template_id=random.randint(1,3)))
+        pass
+
+    def placeObject(self, row, col, type):      # Tower and Blockade
+        self.nodeManager.addBlock(row, col)
+        Gecko.setPath(self.nodeManager.currentPath)
         pass
 
     def update(self, dt, events):
-        for entity in self.entities:
-            entity.update(dt, events)
+        for gecko in self.geckos:
+            gecko.update(dt, events)
+            if gecko.hp <= 0:
+                self.geckos.remove(gecko)
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
 
@@ -98,5 +107,5 @@ class Stage:
         for object in self.objects:
             object.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
 
-        for entity in self.entities:
+        for entity in self.geckos:
             entity.render(screen)

@@ -8,6 +8,7 @@ class Node:
 
     def connect(self, node):
         self.connections.append(node)
+        node.isOrphaned = False
 
     def resetConnection(self):
         self.connections = []
