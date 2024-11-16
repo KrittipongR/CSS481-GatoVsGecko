@@ -13,6 +13,8 @@ from src.StateMachine import StateMachine
 # from src.GameObject import GameObject
 # from src.object_defs import *
 
+from src.world.NodeManager import NodeManager
+
 class Stage:
     def __init__(self):
         self.width = MAP_WIDTH
@@ -38,6 +40,7 @@ class Stage:
         self.adjacent_offset_x = 0
         self.adjacent_offset_y = 0
 
+        self.nodeManager = NodeManager(MAP_GRID_ROWS, MAP_GRID_COLS)
     def GenerateWallsAndFloors(self):
         for y in range(1, self.height + 1):
             self.tiles.append([])
