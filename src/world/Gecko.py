@@ -1,6 +1,6 @@
 import pygame
 import math
-from src.Util import SpriteManager, Template, convertGridToCoords
+from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid
 from src.Constants import *
 
 class Gecko:
@@ -9,9 +9,10 @@ class Gecko:
     def setPath(path):    # Path is given as a list of nodes
         # Goal: Minimize turns by finding the row that yields the longest straight line in each step
         currentNode = 0
-        maxLength = 0
-        bestRow = 0
+        Gecko.waypoints = []
         while currentNode < len(path) - 1:
+            maxLength = 0
+            bestRow = 0
             for row in range(path[currentNode].row1, path[currentNode].row2 + 1):
                 i = 1
                 while currentNode + i < len(path) and row in range(path[currentNode + i].row1, path[currentNode + i].row2 + 1):
@@ -23,7 +24,6 @@ class Gecko:
             if maxLength > 1:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
-        print(Gecko.waypoints)
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
@@ -40,6 +40,8 @@ class Gecko:
         self.x, self.y = Gecko.waypoints[0]
         self.pathProgress = 0   # Index for waypoints
         self.hp = self.template.data["maxHP"]
+        self.xMod = 0
+        self.yMod = 0
         self.setDirection(3)
         self.currentDirection = 3
         self.updateWaypoint()
@@ -52,16 +54,21 @@ class Gecko:
         else:
             self.path = "./sprites/gecko_DownRight.json"
             self.sprite_name = Gecko.names[self.template_id] + "_walk_down"
+        self.currentDirection = direction
         self.sprite_collection = SpriteManager(path=self.path).spriteCollection
         
     def updateWaypoint(self):
         self.waypoint = Gecko.waypoints[self.pathProgress + 1]
-        if self.waypoint[0] != self.x:
+        print("calling func at coordinates:" + str(self.x) + ", " + str(self.y))
+        test = convertCoordsToGrid((self.x, self.y))
+        print("test:")
+        print(test)
+        if convertCoordsToGrid(self.waypoint)[1] != test[1]:
             self.xMod = math.copysign(1, self.waypoint[0] - self.x)
             self.yMod = 0
             if self.currentDirection != (2 + self.xMod):
                 self.setDirection(2 + self.xMod)  # Magic
-        elif self.waypoint[1] != self.y:
+        elif convertCoordsToGrid(self.waypoint)[0] != test[0]:
             self.xMod = 0
             self.yMod = math.copysign(1, self.waypoint[1] - self.y)
             if self.currentDirection != (1 + self.yMod):

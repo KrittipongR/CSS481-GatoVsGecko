@@ -133,11 +133,13 @@ class PlayState(BaseState):
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('game_over')
             
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1: # Left click
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None:
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
-                        self.selectedPlaceable = None
+                        # self.selectedPlaceable = None
+                        pass
                     else:   # placement is rejected
+                        print("Placement rejected")
                         pass
 
         
@@ -148,7 +150,8 @@ class PlayState(BaseState):
     
     def render(self, screen):
 
-        self.stage.render(screen, -TILE_SIZE*2, 0)
+        # self.stage.render(screen, -TILE_SIZE*2, 0)
+        self.stage.render(screen, 0, 0)
 
         # Render the title
         # t_title = gFonts['small'].render("This is the play state", False, (255, 255, 255))

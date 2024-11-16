@@ -83,7 +83,7 @@ class NodeManager:
                 if node.row1 < row:
                     self.addNode(node.row1, row-1, col)
                 if row < node.row2:
-                    self.addNode(row, node.row2, col)
+                    self.addNode(row + 1, node.row2, col)
                 self.removeNode(node)
                 self.removeAllConnections()
                 self.nodeConnectionLoop()

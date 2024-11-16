@@ -5,6 +5,7 @@ from src.Dependencies import *
 from src.Resources import *
 from src.world.Doorway import Doorway
 from src.world.Gecko import Gecko
+from src.world.Blockade import Blockade
 
 # from src.states.entity.EntityDieState import EntityDieState
 # from src.states.entity.EntityWalkState import EntityWalkState
@@ -85,6 +86,11 @@ class Stage:
     def placeObject(self, row, col, type):      # Tower and Blockade
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath)
+            match type:
+                case "blockade":
+                    self.objects.append(Blockade(row, col))
+
+            return True
         else:
             return False
 
@@ -110,13 +116,13 @@ class Stage:
                 else:
                     tileImageList = gStage_image_list
                 screen.blit(tileImageList[tile_id-1], (x, y))
-                pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, TILE_SIZE, TILE_SIZE), 1)
+                pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, TILE_SIZE, TILE_SIZE), 1) # Grid outlines
 
         for doorway in self.doorways:
             doorway.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
 
         for object in self.objects:
-            object.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
+            object.render(screen)
 
         for entity in self.geckos:
             entity.render(screen)
