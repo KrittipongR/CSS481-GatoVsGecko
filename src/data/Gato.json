@@ -1,0 +1,39 @@
+{
+    "spriteSheetURL": "./graphics/gato.png",
+    "type": "none",
+    "size": [512, 512],
+    "templates": [
+        {
+            "name": "gato1",
+            "display_name": "Sniper Cat",
+            "x": 0,
+            "y": 0,
+            "scalefactor": 0.09375,
+            "colorKey": 1
+        },
+        {
+            "name": "gato2",
+            "display_name": "Arrow Cat",
+            "x": 0,
+            "y": 512,
+            "scalefactor": 0.09375,
+            "colorKey": 1
+        },
+        {
+            "name": "gato3",
+            "display_name": "Bomber Cat",
+            "x": 0,
+            "y": 1024,
+            "scalefactor": 0.09375,
+            "colorKey": 1
+        },
+        {
+            "name": "gato4",
+            "display_name": "Sa-meow-rai Tower",
+            "x": 0,
+            "y": 1536,
+            "scalefactor": 0.09375,
+            "colorKey": 1
+        }
+    ]
+}

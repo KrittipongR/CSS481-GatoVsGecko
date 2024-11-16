@@ -9,22 +9,22 @@
                 {
                     "x":0,
                     "y":0,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":512,
                     "y":0,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":1024,
                     "y":0,
-                    "scale":3
+                    "scale":0.2
                 },
 			    {
                     "x":1536,
                     "y":0,
-                    "scale":3
+                    "scale":0.2
                 }
 
             ],
@@ -32,33 +32,33 @@
 			{
 				"x":0,
 				"y":0,
-				"scale":3
+				"scale":0.2
 		     },
             "interval_time":0.2,
-            "colorKey": null
+            "colorKey": [255, 255, 255, 255]
         },
         {
-            "name":"gigaGecko_walk_down",
+            "name":"jinglen_walk_down",
             "images":[
                 {
                     "x":0,
                     "y":512,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":512,
                     "y":512,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":1024,
                     "y":512,
-                    "scale":3
+                    "scale":0.2
                 },
 			    {
                     "x":1536,
                     "y":512,
-                    "scale":3
+                    "scale":0.2
                 }
 
             ],
@@ -66,33 +66,33 @@
 			{
 				"x":0,
 				"y":512,
-				"scale":3
+				"scale":0.2
 		     },
             "interval_time":0.2,
-            "colorKey": null
+            "colorKey": [255, 255, 255, 255]
         },
         {
-            "name":"chameleon_walk_down",
+            "name":"gigaGecko_walk_down",
             "images":[
                 {
                     "x":0,
                     "y":1024,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":512,
                     "y":1024,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":1024,
                     "y":1024,
-                    "scale":3
+                    "scale":0.2
                 },
 			    {
                     "x":1536,
                     "y":1024,
-                    "scale":3
+                    "scale":0.2
                 }
 
             ],
@@ -100,33 +100,33 @@
 			{
 				"x":0,
 				"y":1024,
-				"scale":3
+				"scale":0.2
 		     },
             "interval_time":0.2,
-            "colorKey": null
+            "colorKey": [255, 255, 255, 255]
         },
 	   {
-            "name":"jinglen_walk_down",
+            "name":"chameleon_walk_down",
             "images":[
                 {
                     "x":0,
                     "y":1536,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":512,
                     "y":1536,
-                    "scale":3
+                    "scale":0.2
                 },
                 {
                     "x":1024,
                     "y":1536,
-                    "scale":3
+                    "scale":0.2
                 },
 			    {
                     "x":1536,
                     "y":1536,
-                    "scale":3
+                    "scale":0.2
                 }
 
             ],
@@ -134,10 +134,10 @@
 			{
 				"x":0,
 				"y":1536,
-				"scale":3
+				"scale":0.2
 		     },
             "interval_time":0.2,
-            "colorKey": null
+            "colorKey": [255, 255, 255, 255]
         }
 ]
 }

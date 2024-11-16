@@ -4,6 +4,7 @@ from src.Constants import *
 from src.Dependencies import *
 from src.Resources import *
 from src.world.Doorway import Doorway
+from src.world.Gecko import Gecko
 
 # from src.states.entity.EntityDieState import EntityDieState
 # from src.states.entity.EntityWalkState import EntityWalkState
@@ -11,6 +12,8 @@ from src.world.Doorway import Doorway
 from src.StateMachine import StateMachine
 # from src.GameObject import GameObject
 # from src.object_defs import *
+
+from src.world.NodeManager import NodeManager
 
 class Stage:
     def __init__(self):
@@ -20,8 +23,8 @@ class Stage:
         self.tiles = []
         self.GenerateWallsAndFloors()
 
-        self.entities = []
-        self.GenerateEntities()
+        self.geckos = []
+        # self.GenerateEntities()
 
         self.objects = []
         # self.GenerateObjects()
@@ -36,6 +39,9 @@ class Stage:
 
         self.adjacent_offset_x = 0
         self.adjacent_offset_y = 0
+
+        self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
+        Gecko.setPath(self.nodeManager.currentPath)
 
     def GenerateWallsAndFloors(self):
         for y in range(1, self.height + 1):
@@ -67,10 +73,20 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self):
+    def GenerateEntities(self, wave=1):
+        self.geckos.append(Gecko(template_id=random.randint(1,3)))
+        pass
+
+    def placeObject(self, row, col, type):      # Tower and Blockade
+        self.nodeManager.addBlock(row, col)
+        Gecko.setPath(self.nodeManager.currentPath)
         pass
 
     def update(self, dt, events):
+        for gecko in self.geckos:
+            gecko.update(dt, events)
+            if gecko.hp <= 0:
+                self.geckos.remove(gecko)
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
 
@@ -90,3 +106,6 @@ class Stage:
 
         for object in self.objects:
             object.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
+
+        for entity in self.geckos:
+            entity.render(screen)
