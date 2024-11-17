@@ -37,24 +37,27 @@ class NodeManager:
         newConnection = False
         self.nodeList = sorted(self.nodeList, key=lambda x: x.col)  # Sort by column, ascending
         for node in self.nodeList:            
-            if not node.isOrphaned:     # Only non-orphans can make a left to right connection
+            if not node.isOrphaned:     # Only non-orphans can make a connection
                 for nextNode in self.getNodesByColumn(node.col+direction):
-                    if range(max(nextNode.row1, node.row1), min(nextNode.row2, node.row2)+1) and nextNode not in node.connections: # Checks if two number ranges intersect
+                    if range(max(nextNode.row1, node.row1), min(nextNode.row2, node.row2)+1) and nextNode not in node.connections and node not in nextNode.connections: # Checks if two number ranges intersect
                         newConnection = True
                         node.connect(nextNode)
         return newConnection
 
     def pathFind(self, node, path):         # Recursion fun
+        path = path.copy()
         path.append(node)
         if node.col == self.mapCols - 1:   # Reach the rightmost column (goal for now)
             pathFound = True
         elif not node.connections:          # Dead end
+            print("dead end:" + str((node.col, node.row1, node.row2)))
             pathFound = False
         else:
             for nextNode in node.connections:            
                 results = self.pathFind(nextNode, path)
                 if results[1]:
                     pathFound = True
+                    path = results[0]
                     break
             else:
                 pathFound = False
