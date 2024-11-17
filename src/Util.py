@@ -1,6 +1,7 @@
 import pygame
 import json
 from src.Resources import *
+from src.Constants import *
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -84,10 +85,11 @@ class Sprite:
         self.animation = animation
 
 class SpriteManager:
-    def __init__(self):
+    def __init__(self, path):
         self.spriteCollection = self.loadSprites(
             [
-                "./sprites/Icon.json"
+                # "./sprites/Icon.json"
+                path
             ]
         )
 
@@ -98,9 +100,13 @@ class SpriteManager:
                 data = json.load(jsonData)
                 mySpritesheet = SpriteSheet(data["spriteSheetURL"])
                 dic = {}
+                try:
+                    spriteList = data["sprites"]
+                except KeyError:
+                    spriteList = data["templates"]
 
                 if data["type"] == "animation":
-                    for sprite in data["sprites"]:
+                    for sprite in spriteList:
                         images = []
                         for image in sprite["images"]:
                             try:
@@ -113,7 +119,7 @@ class SpriteManager:
                                     image["x"],
                                     image["y"],
                                     image["scale"],
-                                    colorkey=-1, #sprite["colorKey"],
+                                    colorkey=sprite["colorKey"],
                                     xTileSize=xSize,
                                     yTileSize=ySize,
                                 )
@@ -124,7 +130,7 @@ class SpriteManager:
                                 idle_info["x"],
                                 idle_info["y"],
                                 idle_info["scale"],
-                                colorkey=-1,
+                                colorkey=sprite["colorkey"],
                                 xTileSize=xSize,
                                 yTileSize=ySize
                             )
@@ -143,7 +149,7 @@ class SpriteManager:
                     resDict.update(dic)
                     continue
                 else:
-                    for sprite in data["sprites"]:
+                    for sprite in spriteList:
                         try:
                             colorkey = sprite["colorKey"]
                         except KeyError:
@@ -225,4 +231,56 @@ class Button():
         # Draw the button image on the screen
         screen.blit(self.image, self.rect.topleft)
 
-    
+import json
+
+class Template:
+    def __init__(self, type, template_id=1):
+        self.type = type
+        match self.type:
+            case "gecko":
+                self.path = "./src/data/Gecko.json"
+            case "gato":
+                self.path = "./src/data/Gato.json"
+
+        self.load_template(template_id)
+
+
+        # Loads JSON object as a dictionary
+    def load_template(self, template_id):
+        try:
+            with open(self.path, 'r') as f:
+                data = json.load(f)
+
+            # Iterating through the json list
+            for template in data["templates"]:
+                if self.type + str(template_id) == template["name"]:
+                    self.data = template
+                    break
+            else:
+                self.data = None
+
+        except FileNotFoundError:
+            print(f"Error: The file {self.path} was not found.")
+            return None
+
+        except json.decoder.JSONDecodeError:
+            print(f"Error: Failed to decode the template {self.path} file.")
+            return None
+
+def convertGridToCoords(grid, center=True):  # Default: The output coordinates will be at the center of the grid, NOT TOP-LEFT
+    if center:
+        mod = TILE_SIZE / 2
+    else:
+        mod = 0
+    y = grid[0] * TILE_SIZE + mod
+    x = grid[1] * TILE_SIZE + mod
+    return (x, y)
+
+def convertCoordsToGrid(coords):
+    if int(coords[0]) in range(0, MAP_WIDTH * TILE_SIZE) and int(coords[1]) in range(0, MAP_HEIGHT * TILE_SIZE):
+        row = coords[1] // TILE_SIZE
+        col = coords[0] // TILE_SIZE
+        print((row, col))
+        return (row, col)
+    else:
+        return None

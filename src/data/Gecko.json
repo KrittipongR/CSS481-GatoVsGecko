@@ -1,0 +1,37 @@
+{
+    "spriteSheetURL": "./graphics/gecko_placeholder.png",
+    "type": "none",
+    "size": [256, 256],
+    "templates": [
+        {
+            "name": "gecko1",
+            "display_name": "Gecko Mk. I",
+            "x": 0,
+            "y": 0,
+            
+            "colorKey": 1,
+            "maxHP": 8,
+            "movement" : 80
+        },
+        {
+            "name": "gecko2",
+            "display_name": "Gecko Mk. II",
+            "x": 256,
+            "y": 0,
+            
+            "colorKey": 1,
+            "maxHP": 5,
+            "movement" : 200
+        },
+        {
+            "name": "gecko3",
+            "display_name": "Gecko Mk. III",
+            "x": 512,
+            "y": 0,
+            
+            "colorKey": 1,
+            "maxHP": 25,
+            "movement" : 40
+        }
+    ]
+}
