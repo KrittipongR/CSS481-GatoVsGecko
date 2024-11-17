@@ -6,6 +6,7 @@ from src.Resources import *
 from src.world.Doorway import Doorway
 from src.world.Gecko import Gecko
 from src.world.Blockade import Blockade
+from src.world.Gato import Gato
 
 # from src.states.entity.EntityDieState import EntityDieState
 # from src.states.entity.EntityWalkState import EntityWalkState
@@ -29,7 +30,10 @@ class Stage:
         # self.GenerateEntities()
 
         self.objects = []
-        # self.GenerateObjects()
+        # self.placeObjects()
+
+        self.gatos = []
+        # self.placeGatos()
 
         self.doorways = []
         #self.doorways.append(Doorway('left', False, self))
@@ -83,7 +87,7 @@ class Stage:
         self.geckos.append(Gecko(template_id=random.randint(1,3)))
         pass
 
-    def placeObject(self, row, col, type):      # Tower and Blockade
+    def placeObject(self, row, col, type):      # Blockade
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath)
             match type:
@@ -93,6 +97,10 @@ class Stage:
             return True
         else:
             return False
+        
+    def placeGatos(self, row, col, type):       # Towers
+        if self.state == 0 and self.nodeManager.addBlock(row, col):
+            self.gatos.append(Gato(row, col))
 
     def update(self, dt, events):
         if not self.geckoQueue and not self.geckos:
