@@ -91,8 +91,10 @@ class Stage:
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath)
             match type:
-                case "blockade":
+                case "BLOCK":
                     self.objects.append(Blockade(row, col))
+                case _:
+                    return False
 
             return True
         else:

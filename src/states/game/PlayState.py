@@ -28,7 +28,7 @@ class PlayState(BaseState):
             'ARROW': 0,
             'BOMB': 0,
             'SNIPER': 0,
-            'BLOCK': 0,
+            'BLOCK': 10,
             'LIFE': 0,
             'LOOT BOX': 0
         }
@@ -39,7 +39,7 @@ class PlayState(BaseState):
         self.btn_bomb = Button(draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 6))
         self.btn_sniper = Button(draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
         self.btn_block = Button(draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
-        self.btn_life = Button(draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
+        # self.btn_life = Button(draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
         
         self.t_setting = 'SETTINGS'
         self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (HEIGHT - 48))
@@ -55,7 +55,7 @@ class PlayState(BaseState):
     
     def buttonHover(self):
         # Change button color based on hover status
-        if self.btn_ready.hover:
+        if self.btn_ready.hover or self.stage.state == 1:
             self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 0))
         else:
             self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 255))
@@ -65,35 +65,35 @@ class PlayState(BaseState):
         else:
             self.btn_shop.image = draw_text(self.t_shop, 'small', (255, 255, 255))
 
-        if self.btn_sword.hover:
+        if self.btn_sword.hover or self.selectedPlaceable == "SWORD":
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 0))
         else:
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255))
 
-        if self.btn_arrow.hover:
+        if self.btn_arrow.hover or self.selectedPlaceable == "ARROW":
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 0))
         else:
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255))
 
-        if self.btn_bomb.hover:
+        if self.btn_bomb.hover or self.selectedPlaceable == "BOMB":
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 0))
         else:
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255))
 
-        if self.btn_sniper.hover:
+        if self.btn_sniper.hover or self.selectedPlaceable == "SNIPER":
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 0))
         else:
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255))
 
-        if self.btn_block.hover:
+        if self.btn_block.hover or self.selectedPlaceable == "BLOCK":
             self.btn_block.image = draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 0))
         else:
             self.btn_block.image = draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255))
 
-        if self.btn_life.hover:
-            self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 0))
-        else:
-            self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255))
+        # if self.btn_life.hover or self.selectedPlaceable == "LIFE":
+        #     self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 0))
+        # else:
+        #     self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255))
 
         if self.btn_setting.hover:
             self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 0))
@@ -101,6 +101,8 @@ class PlayState(BaseState):
             self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 255))
 
     def update(self, dt, events):
+        # Lives display
+
         # Check if each button is clicked by calling `update`
         if self.btn_ready.update():
             gSounds['select'].play()
@@ -113,33 +115,27 @@ class PlayState(BaseState):
         
         if self.btn_sword.update() and self.inventory["SWORD"] > 0:
             gSounds['select'].play()
-            self.inventory["SWORD"] -= 1
-            print("Sword used, remaining:", self.inventory["SWORD"])
+            self.selectedPlaceable = "SWORD"
 
         if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
             gSounds['select'].play()
-            self.inventory["ARROW"] -= 1
-            print("Arrow used, remaining:", self.inventory["ARROW"])
+            self.selectedPlaceable = "ARROW"
 
         if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
             gSounds['select'].play()
-            self.inventory["BOMB"] -= 1
-            print("Bomb used, remaining:", self.inventory["BOMB"])
+            self.selectedPlaceable = "BOMB"
 
         if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
             gSounds['select'].play()
-            self.inventory["SNIPER"] -= 1
-            print("Sniper used, remaining:", self.inventory["SNIPER"])
+            self.selectedPlaceable = "SNIPER"
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
-            self.inventory["BLOCK"] -= 1
-            print("Block used, remaining:", self.inventory["BLOCK"])
+            self.selectedPlaceable = "BLOCK"
         
-        if self.btn_life.update() and self.inventory["LIFE"] > 0:
-            gSounds['select'].play()
-            self.inventory["LIFE"] -= 1
-            print("Life used, remaining:", self.inventory["LIFE"])
+        # if self.btn_life.update() and self.inventory["LIFE"] > 0:
+        #     gSounds['select'].play()
+        #     self.inventory["LIFE"] -= 1
 
         if self.btn_setting.update():
             gSounds['select'].play()
@@ -157,17 +153,24 @@ class PlayState(BaseState):
                     g_state_machine.Change('game_over')
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None:
+                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None and grid[1] < MAP_WIDTH - 1:
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
-                        pass
+                        self.inventory[self.selectedPlaceable] -= 1
                     else:
                         print("Placement rejected")
+                    self.selectedPlaceable = False
 
         self.buttonHover()
         self.stage.update(dt, events)
     
     def render(self, screen):
         self.stage.render(screen, 0, 0)
+
+        self.lives_text = draw_text(f'LIVES: {self.inventory["LIFE"]}', 'small', (255, 255, 255))
+        self.lives_text_rect = self.lives_text.get_rect()
+        self.lives_text_rect.topleft = ((WIDTH - (WIDTH / 10) - 24), (48 * 1))
+        screen.blit(self.lives_text, self.lives_text_rect.topleft)
+
         self.btn_ready.render(screen)
         self.btn_shop.render(screen)
         self.btn_sword.render(screen)
@@ -175,7 +178,6 @@ class PlayState(BaseState):
         self.btn_bomb.render(screen)
         self.btn_sniper.render(screen)
         self.btn_block.render(screen)
-        self.btn_life.render(screen)
         self.btn_setting.render(screen)
 
     def Exit(self):
