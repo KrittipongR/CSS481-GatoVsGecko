@@ -23,6 +23,9 @@ class ShopState(BaseState):
             {"name": "EXTRA LIFE", "cost": 50},
             {"name": "Loot Box", "cost": 200}
         ]
+
+        raw_bg_image = pygame.image.load('graphics/shop.png')
+        self.bg_image = pygame.transform.scale(raw_bg_image, (WIDTH, HEIGHT))
         
         # Define the pool of items that can be awarded from the Loot Box
         self.loot_box_pool = [
@@ -33,7 +36,7 @@ class ShopState(BaseState):
         ]
         
         self.item_buttons = [
-            Button(draw_text(f"{item['name']} - {item['cost']} coins", 'small', (255, 255, 255)), WIDTH // 2 - 100, 150 + i * 40)
+            Button(draw_text(f"{item['name']} - {item['cost']} coins", 'small', (255, 255, 255)), 200, 250 + i * 50)
             for i, item in enumerate(self.items)
         ]
         self.back_button = Button(draw_text("BACK", 'small', (255, 255, 255)), WIDTH - 80, HEIGHT - 50)
@@ -86,9 +89,8 @@ class ShopState(BaseState):
             g_state_machine.Change('play')
 
     def render(self, screen):
-        title_text = draw_text("SHOP", 'large', (255, 255, 255))
-        title_rect = title_text.get_rect(center=(WIDTH // 2, 50))
-        screen.blit(title_text, title_rect)
+
+        screen.blit(self.bg_image, (0, 0))
 
         for i, button in enumerate(self.item_buttons):
             if button.hover:
@@ -103,7 +105,7 @@ class ShopState(BaseState):
             time_elapsed = pygame.time.get_ticks() - self.item_display_time
             if time_elapsed < 3000:
                 item_text = draw_text(f"You got: {self.last_item_bought['name']}", 'medium', (255, 255, 0))
-                item_rect = item_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+                item_rect = item_text.get_rect(center=(WIDTH // 2, HEIGHT - 50))
                 screen.blit(item_text, item_rect)
 
     def Exit(self):
