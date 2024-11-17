@@ -19,8 +19,8 @@ class ShopState(BaseState):
             {"name": "ARROW", "cost": 50},
             {"name": "BOMB", "cost": 75},
             {"name": "SNIPER", "cost": 150},
-            {"name": "BLOCKADE", "cost": 120},
-            {"name": "EXTRA LIFE", "cost": 50},
+            {"name": "BLOCK", "cost": 120},
+            {"name": "LIFE", "cost": 50},
             {"name": "Loot Box", "cost": 200}
         ]
 

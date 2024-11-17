@@ -24,12 +24,12 @@ class PlayState(BaseState):
         
         # Items available to buy
         self.inventory = {
-            'SWORD': 5,
+            'SWORD': 0,
             'ARROW': 0,
             'BOMB': 0,
             'SNIPER': 0,
-            'BLOCKADE': 0,
-            'EXTRA LIFE': 0,
+            'BLOCK': 0,
+            'LIFE': 0,
             'LOOT BOX': 0
         }
 
@@ -38,8 +38,8 @@ class PlayState(BaseState):
         self.btn_arrow = Button(draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 5))
         self.btn_bomb = Button(draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 6))
         self.btn_sniper = Button(draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
-        self.btn_blockade = Button(draw_text(f'BLOCKADE ({self.inventory["BLOCKADE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
-        self.btn_extra_life = Button(draw_text(f'EXTRA LIFE ({self.inventory["EXTRA LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
+        self.btn_block = Button(draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
+        self.btn_life = Button(draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
         
         self.t_setting = 'SETTINGS'
         self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (HEIGHT - 48))
@@ -85,15 +85,15 @@ class PlayState(BaseState):
         else:
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255))
 
-        if self.btn_blockade.hover:
-            self.btn_blockade.image = draw_text(f'BLOCKADE ({self.inventory["BLOCKADE"]})', 'small', (255, 255, 0))
+        if self.btn_block.hover:
+            self.btn_block.image = draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 0))
         else:
-            self.btn_blockade.image = draw_text(f'BLOCKADE ({self.inventory["BLOCKADE"]})', 'small', (255, 255, 255))
+            self.btn_block.image = draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255))
 
-        if self.btn_extra_life.hover:
-            self.btn_extra_life.image = draw_text(f'EXTRA LIFE ({self.inventory["EXTRA LIFE"]})', 'small', (255, 255, 0))
+        if self.btn_life.hover:
+            self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 0))
         else:
-            self.btn_extra_life.image = draw_text(f'EXTRA LIFE ({self.inventory["EXTRA LIFE"]})', 'small', (255, 255, 255))
+            self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255))
 
         if self.btn_setting.hover:
             self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 0))
@@ -131,15 +131,15 @@ class PlayState(BaseState):
             self.inventory["SNIPER"] -= 1
             print("Sniper used, remaining:", self.inventory["SNIPER"])
 
-        if self.btn_blockade.update() and self.inventory["BLOCKADE"] > 0:
+        if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
-            self.inventory["BLOCKADE"] -= 1
-            print("Blockade used, remaining:", self.inventory["BLOCKADE"])
+            self.inventory["BLOCK"] -= 1
+            print("Block used, remaining:", self.inventory["BLOCK"])
         
-        if self.btn_extra_life.update() and self.inventory["EXTRA LIFE"] > 0:
+        if self.btn_life.update() and self.inventory["LIFE"] > 0:
             gSounds['select'].play()
-            self.inventory["EXTRA LIFE"] -= 1
-            print("Extra life used, remaining:", self.inventory["EXTRA LIFE"])
+            self.inventory["LIFE"] -= 1
+            print("Life used, remaining:", self.inventory["LIFE"])
 
         if self.btn_setting.update():
             gSounds['select'].play()
@@ -174,8 +174,8 @@ class PlayState(BaseState):
         self.btn_arrow.render(screen)
         self.btn_bomb.render(screen)
         self.btn_sniper.render(screen)
-        self.btn_blockade.render(screen)
-        self.btn_extra_life.render(screen)
+        self.btn_block.render(screen)
+        self.btn_life.render(screen)
         self.btn_setting.render(screen)
 
     def Exit(self):
