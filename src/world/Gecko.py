@@ -27,6 +27,8 @@ class Gecko:
             if maxLength > 1:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
+        Gecko.waypoints.append(convertGridToCoords((7, 21)))
+        Gecko.waypoints.append(convertGridToCoords((7, 22)))
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
@@ -62,16 +64,13 @@ class Gecko:
         
     def updateWaypoint(self):
         self.waypoint = Gecko.waypoints[self.pathProgress + 1]
-        print("calling func at coordinates:" + str(self.x) + ", " + str(self.y))
-        test = convertCoordsToGrid((self.x, self.y))
-        print("test:")
-        print(test)
-        if convertCoordsToGrid(self.waypoint)[1] != test[1]:
+        grid = convertCoordsToGrid((self.x, self.y))
+        if convertCoordsToGrid(self.waypoint)[1] != grid[1]:
             self.xMod = math.copysign(1, self.waypoint[0] - self.x)
             self.yMod = 0
             if self.currentDirection != (2 + self.xMod):
                 self.setDirection(2 + self.xMod)  # Magic
-        elif convertCoordsToGrid(self.waypoint)[0] != test[0]:
+        elif convertCoordsToGrid(self.waypoint)[0] != grid[0]:
             self.xMod = 0
             self.yMod = math.copysign(1, self.waypoint[1] - self.y)
             if self.currentDirection != (1 + self.yMod):

@@ -11,7 +11,7 @@ class NodeManager:
         self.nodeList = []
         self.currentNodeID = 0
         self.currentPath = []
-        for i in range(self.mapCols):
+        for i in range(self.mapCols - 1):
             self.addNode(row1=0, row2=mapRows-1, col=i)
         self.nodeConnectionLoop()
         pass
@@ -20,6 +20,7 @@ class NodeManager:
         newNode = Node(row1=row1, row2=row2, col=col, nodeID=self.currentNodeID)
         self.nodeList.append(newNode)
         self.currentNodeID += 1
+        return self.currentNodeID - 1
 
     def removeNode(self, node):
         self.nodeList.remove(node) 
@@ -47,7 +48,7 @@ class NodeManager:
     def pathFind(self, node, path):         # Recursion fun
         path = path.copy()
         path.append(node)
-        if node.col == self.mapCols - 1:   # Reach the rightmost column (goal for now)
+        if node.col == self.mapCols - 2 and 7 in range(node.row1, node.row2 + 1):   # Reach the door (row 7)
             pathFound = True
         elif not node.connections:          # Dead end
             print("dead end:" + str((node.col, node.row1, node.row2)))
@@ -80,20 +81,28 @@ class NodeManager:
                 
             
     def addBlock(self, row, col):   # Splits the node the block (tower/blockade) is on into two nodes
-        self.previousPath = self.currentPath.copy()
         for node in self.getNodesByColumn(col):
             if row in range(node.row1, node.row2+1):
+                temp = (node.row1, node.row2)
+                topNode = None
+                bottomNode = None
                 if node.row1 < row:
-                    self.addNode(node.row1, row-1, col)
+                    topNode = self.addNode(node.row1, row-1, col)
                 if row < node.row2:
-                    self.addNode(row + 1, node.row2, col)
+                    bottomNode = self.addNode(row + 1, node.row2, col)
                 self.removeNode(node)
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
-                break
-        if self.currentPath is None:
-            self.currentPath = self.previousPath.copy()
-            return False
+                if self.currentPath is None:
+                    if topNode is not None:
+                        self.removeNode(self.getNodeByID(topNode))
+                    if bottomNode is not None:
+                        self.removeNode(self.getNodeByID(bottomNode))
+                    self.addNode(temp[0], temp[1], col)
+                    self.removeAllConnections()
+                    self.nodeConnectionLoop()
+                    return False
+        
         return True     # Good enough for now?
 
     def getNodesByColumn(self, col):
