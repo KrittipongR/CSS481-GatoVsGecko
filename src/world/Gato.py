@@ -3,6 +3,7 @@ import math
 from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateAngle
 from src.Constants import *
 from src.Resources import *
+from src.world.Projectile import *
 
 class Gato:
 
@@ -26,6 +27,7 @@ class Gato:
 
         self.dmgNumbers = []
         self.targets = []
+        self.projectiles=[]
         self.attackRadius: float = self.template["range"][self.lvl-1] * TILE_SIZE
         try:
             self.targeting: str = self.template["targeting"]
@@ -94,6 +96,12 @@ class Gato:
                 self.dmgNumbers.remove(dmgNumber)
             else:
                 dmgNumber[2] -= dt
+        
+        for projectile in self.projectiles:
+            projectile.update(dt)
+            if not projectile.active:
+                self.projectiles.remove(projectile)
+
 
         if self.exclamationTimer <= 0:
             self.isAttacking = False
@@ -108,7 +116,8 @@ class Gato:
                     case "first":
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
-                        target.hp -= self.damage   
+                        self.projectiles.append(Projectile(self.x, self.y, target.x, target.y, 300, self.damage))
+   
                         gSounds["hurt"].play()
 
                         font_size = gFonts['small'].size(f'-{self.damage}')                    
@@ -121,7 +130,10 @@ class Gato:
             else:
                 self.attackTimer -= dt
 
-    def render(self, screen: pygame.Surface):       
+    def render(self, screen: pygame.Surface):
+        for projectile in self.projectiles:
+            projectile.render(screen)
+
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         self.wpn_sprite.set_colorkey(self.wpn_sprite.get_at((0, 0)),pygame.RLEACCEL)
         if self.show:

@@ -16,13 +16,13 @@ class StartState(BaseState):
         self.btn_play = Button(draw_text(self.t_play, 'medium', (255, 255, 0)), (WIDTH / 2 - (len(self.t_play) / 2) * 24), (HEIGHT / 2 + 96))
         self.inventory = {
             'LIFE': 12,
-            'SWORD': 4,
-            'ARROW': 4,
-            'BOMB': 4,
-            'SNIPER': 4,
+            'SWORD': 1,
+            'ARROW': 1,
+            'BOMB': 1,
+            'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':100,
+            'MONEY':10,
             'RESET': True
         }
 

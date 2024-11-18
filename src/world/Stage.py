@@ -48,7 +48,9 @@ class Stage:
         self.adjacent_offset_y = 0
 
         self.state = 0
-        self.timer = 0
+        self.timer = 0  # Timer to track time for spawn delay
+        self.spawn_interval = 1  # Delay in seconds (1 second)
+        self.spawn_queue = []  # Queue of entities to spawn with delay
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
         Gecko.setPath(self.nodeManager.currentPath[::-1])
@@ -83,42 +85,45 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self, gecko=None):
-        self.state = 1    
-        if gecko == "Normal":
-            self.geckos.append(Gecko(template_id=1))
-        elif gecko == "Fast":
-            self.geckos.append(Gecko(template_id=2))
-        elif gecko == "Chad":
-            self.geckos.append(Gecko(template_id=3))
-        elif gecko == "Jagras":
-            self.geckos.append(Gecko(template_id=4))
-        else:
-            self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
+    def GenerateEntities(self, gecko=None, num=1):
+        # Add the specified number of entities to the spawn queue
+        for _ in range(num):
+            if gecko == "Normal":
+                self.spawn_queue.append(Gecko(template_id=1))
+            elif gecko == "Fast":
+                self.spawn_queue.append(Gecko(template_id=2))
+            elif gecko == "Chad":
+                self.spawn_queue.append(Gecko(template_id=3))
+            elif gecko == "Jagras":
+                self.spawn_queue.append(Gecko(template_id=4))
+            else:
+                self.spawn_queue.append(Gecko(template_id=random.randint(1, 4)))
+        
 
     def GenerateWaves(self, difficulty=1):
         if difficulty == 1:
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=5)
             self.GenerateEntities(gecko="Chad")
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Chad")
         elif difficulty == 2:
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Fast")
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Fast")
-            self.GenerateEntities(gecko="Chad")
+            self.GenerateEntities(gecko="Chad", num=2)
         elif difficulty == 3:
-            self.GenerateEntities(gecko="Jagras")
-            self.GenerateEntities(gecko="Normal")
-            self.GenerateEntities(gecko="Chad")
-            self.GenerateEntities(gecko="Jagras")
+            self.GenerateEntities(gecko="Jagras", num=1)
+            self.GenerateEntities(gecko="Normal", num=3)
+            self.GenerateEntities(gecko="Chad", num=1)
+            self.GenerateEntities(gecko="Jagras", num=2)
         else:
             for i in range(math.ceil(difficulty)):
                 self.GenerateEntities(num=random.randint(1,range(math.ceil(difficulty))))
 
 
     def placeObject(self, row, col, type):      # Blockade
+        merged=False
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath[::-1])
             match type:
@@ -152,6 +157,7 @@ class Stage:
                                 if gato.lvl ==1: 
                                     gato.lvl += 1
                                     print("Upgrade to lvl", gato.lvl)
+                                    merged=True
                                     
                                     # Recalculate attributes
                                     gato.damage = gato.template["damage"][gato.lvl - 1]
@@ -167,8 +173,9 @@ class Stage:
                                 
                             else:
                                 return False
-                        
-                    self.gatos.append(Gato(row,col, template_id=templates[type]))
+                    if not merged:
+                        self.gatos.append(Gato(row,col, template_id=templates[type]))
+                    
                 case _:
                     return False
 
@@ -186,63 +193,70 @@ class Stage:
     #             break
 
     def moveTower(self, old_row, old_col, new_row, new_col):
-            # Find the tower at the old position
-            is_upgrade = False
-            for gato in self.gatos:
-                if gato.row == old_row and gato.col == old_col:
-                    for targetGato in self.gatos:
-                        if targetGato.row == new_row and targetGato.col == new_col:
-                            if gato.template_id == targetGato.template_id and gato.lvl == targetGato.lvl and gato.lvl < 3:
-                                targetGato.lvl += 1
-                                print("Upgrade to lvl", targetGato.lvl)
-                                    
-                                # Recalculate attributes
-                                targetGato.damage = targetGato.template["damage"][targetGato.lvl - 1]
-                                targetGato.attackRadius = targetGato.template["range"][targetGato.lvl - 1] * TILE_SIZE
-                                targetGato.period = targetGato.template["period"][targetGato.lvl - 1]
-                                    
-                                # Update sprite
-                                targetGato.setDirection(targetGato.direction)
-                                is_upgrade = True
-                                                               
-                            else:
-                                print("Invalid move: Target position is occupied or invalid.")
-                                gato.show = True
-                                return False
-                    # Validate the new position
-                    if self.nodeManager.addBlock(new_row, new_col, validateOnly=True):  # Doesn't actually add the block at this step
-                        self.nodeManager.removeBlock((old_row, old_col))
-                        # self.nodeManager.refreshColumn(old_col)
-                        if not is_upgrade:
-                            gato.moveToGrid((new_row, new_col))
-                            gato.show = True                        
-                            self.nodeManager.addBlock(new_row, new_col, validateOnly=False)  # Occupy the new position
+        is_upgrade = False
+        for gato in self.gatos:
+            if gato.row == old_row and gato.col == old_col:
+                for targetGato in self.gatos:
+                    if targetGato.row == new_row and targetGato.col == new_col:
+                        # Check if the target Gato is of the same type and level, and can be upgraded
+                        if gato.template_id == targetGato.template_id and gato.lvl == targetGato.lvl and gato.lvl < 3:
+                            targetGato.lvl += 1
+                            print("Upgrade to lvl", targetGato.lvl)
+
+                            # Recalculate attributes for the upgraded Gato
+                            targetGato.damage = targetGato.template["damage"][targetGato.lvl - 1]
+                            targetGato.attackRadius = targetGato.template["range"][targetGato.lvl - 1] * TILE_SIZE
+                            targetGato.period = targetGato.template["period"][targetGato.lvl - 1]
+
+                            # Update sprite
+                            targetGato.setDirection(targetGato.direction)
+                            is_upgrade = True
+                            
                         else:
-                            self.gatos.remove(gato)
-                        Gecko.setPath(self.nodeManager.currentPath[::-1])
-                        return True
-                    else:
-                        print("Invalid move: Target position is occupied or invalid.")
+                            print("Invalid move: Target position is occupied or invalid.")
+                            gato.show = True
+                            return False
+
+                # Validate the new position
+                if self.nodeManager.addBlock(new_row, new_col, validateOnly=True):  # Doesn't actually add the block at this step
+                    self.nodeManager.removeBlock((old_row, old_col))
+                    if not is_upgrade:
+                        gato.moveToGrid((new_row, new_col))
                         gato.show = True
-            return False
+                        self.nodeManager.addBlock(new_row, new_col, validateOnly=False)  # Occupy the new position
+                    else:
+                        self.gatos.remove(gato)  # Only remove gato if upgraded
+                    Gecko.setPath(self.nodeManager.currentPath[::-1])
+                    return True
+                else:
+                    print("Invalid move: Target position is occupied or invalid.")
+                    gato.show = True  # Ensure show is true if the move is invalid
+        
+        return False
+
 
 
     def update(self, dt, events):
+        self.timer += dt  # Increment timer with delta time
 
-        self.timer = self.timer + dt
+        # Check if enough time has passed to spawn the next entity
+        if self.spawn_queue and self.timer >= self.spawn_interval:
+            entity_to_spawn = self.spawn_queue.pop(0)  # Get the next entity from the queue
+            self.geckos.append(entity_to_spawn)  # Add the entity to the geckos list
+            self.timer = 0  # Reset the timer for the next spawn
 
+        # Update existing entities
+        for gecko in self.geckos:
+            gecko.update(dt, events)
+
+        # Handle other updates (doorway checks, entity health, etc.)
         if not self.geckoQueue and not self.geckos:
             self.state = 0
-        else:            
-            for gecko in self.geckos:
-                gecko.update(dt, events)
-
-                for doorway in self.doorways:
-                    gecko_coords = (gecko.x, gecko.y)
-                    
+        for gecko in self.geckos:
+            for doorway in self.doorways:
+                gecko_coords = (gecko.x, gecko.y)
                 if gecko_coords == (1080, 360) and not doorway.open:
                     doorway.open_door()  # Open the door
-
                 if gecko.hp <= 0:
                     self.geckos.remove(gecko)
                     
