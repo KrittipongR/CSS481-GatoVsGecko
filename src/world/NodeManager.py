@@ -19,7 +19,7 @@ class NodeManager:
 
     def addNode(self, rowRange:range, col:int) -> int:
 
-        for node in self.nodeList:  # Vertically adjacent
+        for node in self.getNodesByColumn(col):  # Vertically adjacent
             if node.row2 == rowRange[0] - 1:     
                 newNode = Node(range(node.row1, rowRange[-1] + 1), col, self.currentNodeID)
                 break
@@ -115,9 +115,9 @@ class NodeManager:
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
 
-                # print("printing ALL nodes")
-                # for node2 in self.nodeList:
-                #     print((node2.col, node2.row1, node2.row2))
+                print("printing ALL nodes")
+                for node2 in self.nodeList:
+                    print((node2.col, node2.row1, node2.row2))
 
                 if self.currentPath == [] or validateOnly:
                     if topNode is not None:
