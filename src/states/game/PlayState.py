@@ -17,6 +17,10 @@ def draw_text(text, font, text_col):
 class PlayState(BaseState):
 
     def __init__(self):
+
+        self.diff = 1
+        self.wave = False
+
         # Button initializations
         self.t_ready = 'READY'
         self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
@@ -92,10 +96,13 @@ class PlayState(BaseState):
     
     def buttonHover(self):
         # Change button color based on hover status
-        if self.btn_ready.hover or self.stage.state == 1:
-            self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 0))
+        if self.wave == False:
+            if self.btn_ready.hover or self.stage.state == 1:
+                self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 0))
+            else:
+                self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 255))
         else:
-            self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 255))
+            self.btn_ready.image = draw_text(self.t_ready, 'small', (150,150,150))
 
         if self.btn_shop.hover:
             self.btn_shop.image = draw_text(self.t_shop, 'small', (255, 255, 0))
@@ -154,9 +161,15 @@ class PlayState(BaseState):
         # Check if each button is clicked by calling `update`
         if self.chinook == []:
             if self.btn_ready.update():
-                gSounds['select'].play()
-                print("Ready button clicked")
-                self.stage.GenerateEntities(wave=self.wave)
+                if self.wave == True:
+                    gSounds['broke'].play()
+                else:
+                    gSounds['select'].play()
+                    self.wave = True
+                    print("Current Wave:" + str(self.diff))
+                    # self.stage.GenerateEntities(wave=self.wave)
+                    self.stage.GenerateWaves(difficulty=self.diff)
+                    self.diff += 1
             
             if self.btn_shop.update():
                 gSounds['select'].play()
@@ -279,6 +292,9 @@ class PlayState(BaseState):
             if gecko.geckoDoor and not self.doorway.open:
                 gSounds['door'].play()                
                 self.doorway.open_door()
+
+        if self.stage.geckos == []:
+            self.wave = False
         
         self.buttonHover()
         self.stage.update(dt, events)
@@ -292,7 +308,7 @@ class PlayState(BaseState):
         self.lives_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 1))
         screen.blit(self.lives_text, self.lives_text_rect.topleft)
 
-        self.money_text = draw_text(f'MONEY: {self.inventory["MONEY"]}', 'small', (255, 255, 255))
+        self.money_text = draw_text(f'Geckoin: {self.inventory["MONEY"]}', 'small', (255, 255, 255))
         self.money_text_rect = self.money_text.get_rect()
         self.money_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 2))
         screen.blit(self.money_text, self.money_text_rect.topleft)

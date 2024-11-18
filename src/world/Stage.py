@@ -48,6 +48,7 @@ class Stage:
         self.adjacent_offset_y = 0
 
         self.state = 0
+        self.timer = 0
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
         Gecko.setPath(self.nodeManager.currentPath[::-1])
@@ -82,12 +83,40 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self, wave=1):
-        #self.geckoQueue.append(...)
-        self.state = 1
-        self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
-        # print(self.geckos[-1].templates)
-        pass
+    def GenerateEntities(self, gecko=None):
+        self.state = 1    
+        if gecko == "Normal":
+            self.geckos.append(Gecko(template_id=1))
+        elif gecko == "Fast":
+            self.geckos.append(Gecko(template_id=2))
+        elif gecko == "Chad":
+            self.geckos.append(Gecko(template_id=3))
+        elif gecko == "Jagras":
+            self.geckos.append(Gecko(template_id=4))
+        else:
+            self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
+
+    def GenerateWaves(self, difficulty=1):
+        if difficulty == 1:
+            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Chad")
+            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Chad")
+        elif difficulty == 2:
+            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Fast")
+            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Fast")
+            self.GenerateEntities(gecko="Chad")
+        elif difficulty == 3:
+            self.GenerateEntities(gecko="Jagras")
+            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Chad")
+            self.GenerateEntities(gecko="Jagras")
+        else:
+            for i in range(math.ceil(difficulty)):
+                self.GenerateEntities(num=random.randint(1,range(math.ceil(difficulty))))
+
 
     def placeObject(self, row, col, type):      # Blockade
         if self.state == 0 and self.nodeManager.addBlock(row, col):
@@ -199,6 +228,9 @@ class Stage:
 
 
     def update(self, dt, events):
+
+        self.timer = self.timer + dt
+
         if not self.geckoQueue and not self.geckos:
             self.state = 0
         else:            
