@@ -160,27 +160,27 @@ class PlayState(BaseState):
         if self.btn_sword.update() and self.inventory["SWORD"] > 0:
             gSounds['select'].play()
             self.hold = self.holdTower(template_id=4,lvl=1)
-            self.selectedPlaceable = "SWORD" if self.selectedPlaceable == None else None
+            self.selectedPlaceable = "SWORD" if self.selectedPlaceable != "SWORD" else None
 
         if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
             gSounds['select'].play()
             self.hold = self.holdTower(template_id=2,lvl=1)
-            self.selectedPlaceable = "ARROW" if self.selectedPlaceable == None else None
+            self.selectedPlaceable = "ARROW" if self.selectedPlaceable != "ARROW" else None
 
         if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
             gSounds['select'].play()
             self.hold = self.holdTower(template_id=3,lvl=1)
-            self.selectedPlaceable = "BOMB" if self.selectedPlaceable == None else None
+            self.selectedPlaceable = "BOMB" if self.selectedPlaceable != "BOMB" else None
 
         if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
             gSounds['select'].play()
             self.hold = self.holdTower(template_id=1,lvl=1)
-            self.selectedPlaceable = "SNIPER" if self.selectedPlaceable == None else None
+            self.selectedPlaceable = "SNIPER" if self.selectedPlaceable != "SNIPER" else None
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
             self.hold = "wall"
-            self.selectedPlaceable = "BLOCK" if self.selectedPlaceable == None else None
+            self.selectedPlaceable = "BLOCK" if self.selectedPlaceable != "BLOCK" else None
         
         # if self.btn_life.update() and self.inventory["LIFE"] > 0:
         #     gSounds['select'].play()
@@ -212,10 +212,8 @@ class PlayState(BaseState):
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                         self.inventory[self.selectedPlaceable] -= 1
                         print(self.stage.gatos)
-                        self.hold = None
                     else:
                         print("Placement rejected")
-                        self.hold = None
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
                         self.hold = None
