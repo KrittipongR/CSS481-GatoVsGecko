@@ -55,7 +55,21 @@ class PlayState(BaseState):
         
 
     def Enter(self, params):
-        pass
+        self.inventory = {
+            'LIFE': params['LIFE'],
+            'SWORD': params['SWORD'],
+            'ARROW': params['ARROW'],
+            'BOMB': params['BOMB'],
+            'SNIPER': params['SNIPER'],
+            'BLOCK': params['BLOCK'],
+            'LOOT BOX': params['LOOT BOX'],
+            'MONEY': params['MONEY']
+        }
+        if params['RESET']:
+            self.stage.geckos.clear()
+            self.stage.gatos.clear()
+            self.stage.objects.clear()
+        
     
     def buttonHover(self):
         # Change button color based on hover status
