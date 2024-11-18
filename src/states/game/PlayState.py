@@ -162,6 +162,11 @@ class PlayState(BaseState):
         # Lives display
 
         # Check if each button is clicked by calling `update`
+
+        if self.stage.state == 0:
+            self.wave = False
+
+        
         if self.chinook == []:
             if self.btn_ready.update():
                 if self.wave == True:
@@ -297,9 +302,6 @@ class PlayState(BaseState):
                 gSounds['door'].play()                
                 self.doorway.open_door()
                 self.inventory["LIFE"] -= 1
-
-        if self.stage.geckos == []:
-            self.wave = False
         
         self.buttonHover()
         self.stage.update(dt, events)
