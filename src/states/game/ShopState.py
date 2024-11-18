@@ -60,7 +60,17 @@ class ShopState(BaseState):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    g_state_machine.Change('play')
+                    g_state_machine.Change('play', {
+                        'LIFE': self.player_inventory['LIFE'],
+                        'SWORD': self.player_inventory['SWORD'],
+                        'ARROW': self.player_inventory['ARROW'],
+                        'BOMB': self.player_inventory['BOMB'],
+                        'SNIPER': self.player_inventory['SNIPER'],
+                        'BLOCK': self.player_inventory['BLOCK'],
+                        'LOOT BOX': self.player_inventory['LOOT BOX'],
+                        'MONEY': self.player_inventory['MONEY'],
+                        'RESET': False
+                    })
 
         for i, button in enumerate(self.item_buttons):
             if button.rect.collidepoint(mouse_x, mouse_y):
@@ -85,7 +95,17 @@ class ShopState(BaseState):
                     gSounds['select'].play()
 
         if self.back_button.update():
-            g_state_machine.Change('play')
+            g_state_machine.Change('play', {
+                        'LIFE': self.player_inventory['LIFE'],
+                        'SWORD': self.player_inventory['SWORD'],
+                        'ARROW': self.player_inventory['ARROW'],
+                        'BOMB': self.player_inventory['BOMB'],
+                        'SNIPER': self.player_inventory['SNIPER'],
+                        'BLOCK': self.player_inventory['BLOCK'],
+                        'LOOT BOX': self.player_inventory['LOOT BOX'],
+                        'MONEY': self.player_inventory['MONEY'],
+                        'RESET': False
+                    })
 
     def render(self, screen):
 
@@ -97,6 +117,11 @@ class ShopState(BaseState):
             else:
                 button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 255))
             button.render(screen)
+
+        if self.back_button.hover:
+            self.back_button.image = draw_text("BACK", 'small', (255, 255, 0))
+        else:
+            self.back_button.image = draw_text("BACK", 'small', (255, 255, 255))
 
         self.back_button.render(screen)
 

@@ -21,7 +21,17 @@ class StartState(BaseState):
     def update(self, dt, events):
         # Check if the play button is clicked
         if self.btn_play.update():
-            g_state_machine.Change('play')
+            g_state_machine.Change('play',enter_params={
+            'LIFE': 12,
+            'SWORD': 1,
+            'ARROW': 1,
+            'BOMB': 1,
+            'SNIPER': 1,
+            'BLOCK': 30,
+            'LOOT BOX': 0,
+            'MONEY':4,
+            'RESET': True
+        })
 
         # Process input events
         for event in events:
@@ -33,7 +43,17 @@ class StartState(BaseState):
                     pygame.quit()
                     sys.exit()
                 if event.key == pygame.K_RETURN:
-                    g_state_machine.Change('play')
+                    g_state_machine.Change('play',enter_params={
+                        'LIFE': 12,
+                        'SWORD': 1,
+                        'ARROW': 1,
+                        'BOMB': 1,
+                        'SNIPER': 1,
+                        'BLOCK': 30,
+                        'LOOT BOX': 0,
+                        'MONEY':4,
+                        'RESET':True
+                    })
 
     def render(self, screen):
         # Render the title
