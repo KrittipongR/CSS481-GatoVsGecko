@@ -16,7 +16,7 @@ from src.StateMachine import StateMachine
 # from src.object_defs import *
 
 from src.world.NodeManager import NodeManager
-from src.Util import calculateRadius
+from src.Util import calculateDistance
 
 class Stage:
     def __init__(self):
@@ -137,7 +137,7 @@ class Stage:
         for gato in self.gatos:
             gato.clearTargets()
             for gecko in self.geckos:
-                if calculateRadius((gato.x, gato.y), (gecko.x, gecko.y), gato.attackRadius):                    
+                if calculateDistance((gato.x, gato.y), (gecko.x, gecko.y)) <= gato.attackRadius:                    
                     gato.addTarget(gecko)
 
             gato.update(dt, events)

@@ -1,6 +1,6 @@
 import pygame
 import math
-from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid
+from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateDistance
 from src.Constants import *
 
 class Gecko:
@@ -30,8 +30,9 @@ class Gecko:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
             # previousRow = bestRow
-        Gecko.waypoints.append(convertGridToCoords((7, 21)))
-        Gecko.waypoints.append(convertGridToCoords((7, 22)))
+        # Gecko.waypoints.append(convertGridToCoords((7, 21)))
+        # Gecko.waypoints.append(convertGridToCoords((7, 22)))
+        print(Gecko.waypoints)
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
@@ -47,6 +48,7 @@ class Gecko:
         self.template = Template("gecko", self.template_id)
         self.x, self.y = Gecko.waypoints[0]
         self.pathProgress = 0   # Index for waypoints
+        self.floatingPathProgress: float = 0
         self.hp = self.template.data["maxHP"]
         self.xMod = 0
         self.yMod = 0
@@ -83,6 +85,13 @@ class Gecko:
     def update(self, dt, events):
         self.x += self.template.data["movement"] * dt * self.xMod
         self.y += self.template.data["movement"] * dt * self.yMod
+
+        if self.pathProgress < len(Gecko.waypoints) - 1:
+            self.floatingPathProgress = self.pathProgress + 1 - (
+                calculateDistance((self.x, self.y), Gecko.waypoints[self.pathProgress + 1]) / calculateDistance(Gecko.waypoints[self.pathProgress], Gecko.waypoints[self.pathProgress + 1])
+            )
+
+        # print(self.floatingPathProgress)
 
         if  (self.x >= self.waypoint[0] and self.xMod == 1) or \
             (self.x <= self.waypoint[0] and self.xMod == -1) or \
