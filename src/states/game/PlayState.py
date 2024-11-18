@@ -174,8 +174,8 @@ class PlayState(BaseState):
                     sys.exit()
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('game_over')
-                if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
-                    self.stage.rotateGato(grid)
+                # if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
+                #     self.stage.rotateGato(grid)
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:

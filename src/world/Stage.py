@@ -16,6 +16,7 @@ from src.StateMachine import StateMachine
 # from src.object_defs import *
 
 from src.world.NodeManager import NodeManager
+from src.Util import calculateRadius
 
 class Stage:
     def __init__(self):
@@ -26,13 +27,13 @@ class Stage:
         self.GenerateWallsAndFloors()
 
         self.geckoQueue = []
-        self.geckos = []
+        self.geckos: list[Gecko] = []
         # self.GenerateEntities()
 
-        self.objects = []
+        self.objects: list[Blockade] = []
         # self.placeObjects()
 
-        self.gatos = []
+        self.gatos: list[Gato] = []
         # self.placeGatos()
 
         self.doorways = []
@@ -111,11 +112,11 @@ class Stage:
     # def placeGatos(self, row, col, type):       # Towers
     #     if self.state == 0 and self.nodeManager.addBlock(row, col):
     #         self.gatos.append(Gato(row, col))
-    def rotateGato(self, grid):
-        for gato in self.gatos:
-            if (gato.row, gato.col) == grid and self.state == 0:
-                gato.setDirection(gato.currentDirection + 1)
-                break
+    # def rotateGato(self, grid):
+    #     for gato in self.gatos:
+    #         if (gato.row, gato.col) == grid and self.state == 0:
+    #             gato.setDirection(gato.currentDirection + 1)
+    #             break
 
     def update(self, dt, events):
         if not self.geckoQueue and not self.geckos:
@@ -155,5 +156,8 @@ class Stage:
         for entity in self.geckos:
             entity.render(screen)
 
-        for entity in self.gatos:
-            entity.render(screen)
+        for gato in self.gatos:
+            for gecko in self.geckos:
+                if calculateRadius((gato.x, gato.y), (gecko.x, gecko.y), gato.attackRadius):
+                    pass
+            gato.render(screen)

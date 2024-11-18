@@ -1,5 +1,5 @@
 {
-    "spriteSheetURL": "./graphics/Gato_DownRight.png",
+    "spriteSheetURL": "./graphics/gato_DownRight.png",
     "type": "none",
     "size":[512, 512],
     "sprites":[
