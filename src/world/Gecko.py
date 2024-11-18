@@ -53,6 +53,7 @@ class Gecko:
         self.setDirection(3)
         self.currentDirection = 3
         self.updateWaypoint()
+        self.reached = False
         print("gecko generated at: " + str(self.x) + ", " + str(self.y))
 
     def setDirection(self, direction):
@@ -90,7 +91,9 @@ class Gecko:
             self.pathProgress += 1
             if self.pathProgress == len(Gecko.waypoints) - 1:   # End of the line
                 # DO SOMETHING HERE TO MAKE THE PLAYER LOSE LIVES
+                self.reached = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
+
             else:
                 self.updateWaypoint()
 
