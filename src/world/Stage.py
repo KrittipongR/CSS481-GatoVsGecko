@@ -150,16 +150,28 @@ class Stage:
                     # Validate the new position
                     if self.nodeManager.addBlock(new_row, new_col):
                         # Update the tower's position
-                        node_to_remove = next((node for node in self.nodeManager.nodeList if node.col == old_col and old_row in range(node.row1, node.row2 + 1)),None)
-                        if node_to_remove:
-                            self.nodeManager.removeNode(node_to_remove)
-                        else:
-                            raise ValueError(f"No node found at row {old_row}, column {old_col}.")
+                        for node in self.nodeManager.getNodesByColumn(old_col):
+                            if node.row1 == old_row + 1:
+                                self.nodeManager.addNode(range(node.row1 - 1, node.row2 + 1), old_col)
+                                self.nodeManager.removeNode(node)
+                            elif node.row2 == old_row - 1:
+                                self.nodeManager.addNode(range(node.row1, node.row2 + 2), old_col)
+                                self.nodeManager.removeNode(node)      
+
+
+
+                        # node_to_remove = next((node for node in self.nodeManager.nodeList if node.col == old_col and old_row in range(node.row1, node.row2 + 1)),None)
+                        # if node_to_remove:
+                        #     self.nodeManager.removeNode(node_to_remove)
+                        # else:
+                        #     raise ValueError(f"No node found at row {old_row}, column {old_col}.")
                         self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
-                        gato.row, gato.col = new_row, new_col
+                        gato.moveToGrid((new_row, new_col))
+                        gato.show = True
                         return True
                     else:
                         print("Invalid move: Target position is occupied or invalid.")
+                        gato.show = True
             return False
 
 

@@ -16,7 +16,7 @@ class Gato:
     def __init__(self, row, col, template_id=1, lvl=1):
         self.template_id = template_id
         self.template = Gato.templates[template_id]
-        (self.x, self.y) = convertGridToCoords((row, col))
+        self.x, self.y = convertGridToCoords((row, col))
         self.row = row
         self.col = col
         self.lvl = lvl
@@ -35,12 +35,18 @@ class Gato:
         self.period: float = self.template["period"]
         self.attackTimer: float = 0
 
+        self.show = True
+
     names = {
         1: "sniper_cat",
         2: "arrow_cat",
         3: "bomb_kitty",
         4: "sameowrai"
     }
+
+    def moveToGrid(self, grid: tuple[int, int]):
+        self.row, self.col = grid
+        self.x, self.y = convertGridToCoords(grid)
 
     def setDirection(self, direction):
         direction = direction % 360
@@ -104,8 +110,9 @@ class Gato:
     def render(self, screen: pygame.Surface):       
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         self.wpn_sprite.set_colorkey(self.wpn_sprite.get_at((0, 0)),pygame.RLEACCEL)
-        screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
-        screen.blit(self.wpn_sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
+        if self.show:
+            screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
+            screen.blit(self.wpn_sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
 
         for dmgNumber in self.dmgNumbers:
             screen.blit(dmgNumber[0], dmgNumber[1])

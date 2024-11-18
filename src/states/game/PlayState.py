@@ -37,8 +37,11 @@ class PlayState(BaseState):
             'MONEY':100
         }
 
-        #Holding Tower
+        # For previewing placement (Just a sprite)
         self.hold = None
+
+        # Storing data of the tower that will be moved
+        self.chinook: list[float] = []
 
         # Initialize buttons for each item with dynamic text
         self.btn_sword = Button(draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
@@ -222,9 +225,9 @@ class PlayState(BaseState):
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:  # Right-click
                 grid = convertCoordsToGrid(self.mouse_pos)
                 if grid != (-1, -1):  # Valid grid position
-                    if self.hold:
+                    if self.hold and self.selectedPlaceable is None:
                         new_row, new_col = grid
-                        if self.stage.moveTower(self.hold.row, self.hold.col, new_row, new_col):
+                        if self.stage.moveTower(self.chinook[0], self.chinook[1], new_row, new_col):
                             print(f"Gato moved to ({new_row}, {new_col})")
                         else:
                             print("Failed to move Gato.")
@@ -233,8 +236,14 @@ class PlayState(BaseState):
                         # Select a tower if not already holding one
                         for gato in self.stage.gatos:
                             if gato.row == grid[0] and gato.col == grid[1]:
-                                self.hold = gato  # Hold the selected tower
-                                print(f"Selected Gato at ({gato.row}, {gato.col})")
+                                # Hold the selected tower
+                                oldGrid = convertCoordsToGrid((gato.x, gato.y))
+                                self.chinook = list(grid)
+                                print(f"Selected Gato at ({oldGrid[0]}, {oldGrid[1]})")
+
+                                self.hold = self.holdTower(template_id=gato.template_id,lvl=gato.lvl)
+                                gato.show = False
+
                                 break
 
         for gecko in self.stage.geckos:
@@ -276,7 +285,7 @@ class PlayState(BaseState):
         # Sanity Check
         # image = pygame.image.load("./graphics/gato_DownRight.png")
         # screen.blit(image, (0,0))
-        if self.hold is not None and self.selectedPlaceable is not None:
+        if self.hold is not None:
             if self.hold == "wall":
                 screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
             else:
