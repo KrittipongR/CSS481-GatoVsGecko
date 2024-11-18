@@ -28,10 +28,10 @@ class PlayState(BaseState):
         # Items available to buy
         self.inventory = {
             'LIFE': 12,
-            'SWORD': 1,
-            'ARROW': 1,
-            'BOMB': 1,
-            'SNIPER': 1,
+            'SWORD': 4,
+            'ARROW': 4,
+            'BOMB': 4,
+            'SNIPER': 4,
             'BLOCK': 30,
             'LOOT BOX': 0,
             'MONEY':100
@@ -185,6 +185,7 @@ class PlayState(BaseState):
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                         self.inventory[self.selectedPlaceable] -= 1
+                        print(self.stage.gatos)
                     else:
                         print("Placement rejected")
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:

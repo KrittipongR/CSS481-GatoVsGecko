@@ -12,6 +12,7 @@ class Gato:
         self.col = col
         self.lvl = lvl
         print("gato placed at grid: " + str(self.row) + ", " + str(self.col))
+        self.direction=90
         self.setDirection(90)
 
 
@@ -32,6 +33,7 @@ class Gato:
 
     def setDirection(self, direction):
         direction = direction % 360
+        self.direction=direction
         path = "./sprites/gato_UpLeft.json"
         self.sprite_collection = SpriteManager([path]).spriteCollection
         self.sprite_name = Gato.names[self.template_id] + "_left_" + str(self.lvl)
