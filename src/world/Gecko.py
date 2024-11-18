@@ -10,7 +10,7 @@ class Gecko:
         # Goal: Minimize turns by finding the row that yields the longest straight line in each step
         currentNode = 0
         Gecko.waypoints = []
-        print("printing nodes:")
+        # print("printing nodes:")
         # for node in path:
         #     print(node.col, node.row1, node.row2)
         # previousRow = 0

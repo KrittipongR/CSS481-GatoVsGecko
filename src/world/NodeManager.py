@@ -13,7 +13,7 @@ class NodeManager:
         self.currentNodeID = 0
         self.currentPath: List[Node] = []
         for i in range(self.mapCols - 1):
-            self.addNode(range(0, mapRows + 1), i)
+            self.addNode(range(0, mapRows), i)
         self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 2))   # Final node at the door (row 7)
         self.nodeConnectionLoop()
 
@@ -42,7 +42,7 @@ class NodeManager:
             if not node.isOrphaned:     # Only non-orphans can make a connection
                 for nextNode in self.getNodesByColumn(node.col+direction):
                     if (intersect := range(max(nextNode.row1, node.row1), min(nextNode.row2, node.row2)+1)) and \
-                    nextNode not in node.connections and node not in nextNode.connections: # Checks if two number ranges intersect
+                        node.connectionInterval(nextNode) == -1 and nextNode.connectionInterval(node) == -1: # Checks if two number ranges intersect
                         newConnection = True
                         node.connect(nextNode, intersect)
         return newConnection
@@ -110,7 +110,7 @@ class NodeManager:
                         self.removeNode(self.getNodeByID(topNode))
                     if bottomNode is not None:
                         self.removeNode(self.getNodeByID(bottomNode))
-                    self.addNode(range(temp[0], temp[1]), col)
+                    self.addNode(range(temp[0], temp[1]+1), col)
                     self.removeAllConnections()
                     self.nodeConnectionLoop()
                     return False

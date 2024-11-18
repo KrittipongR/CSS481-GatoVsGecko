@@ -29,7 +29,7 @@ class PlayState(BaseState):
             'ARROW': 1,
             'BOMB': 1,
             'SNIPER': 1,
-            'BLOCK': 10,
+            'BLOCK': 30,
             'LOOT BOX': 0
         }
 
