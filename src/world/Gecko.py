@@ -36,6 +36,13 @@ class Gecko:
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
+    
+    templates = {}
+    
+    for i in range(1, 4):
+        send_help = Template("gecko", i)
+        templates[i] = send_help.data
+
     names = {
         1: "gecko",
         2: "jinglen",
@@ -45,12 +52,13 @@ class Gecko:
 
     def __init__(self, template_id=1):
         self.template_id = template_id
-        self.template = Template("gecko", self.template_id)
+        self.template: dict = Gecko.templates[self.template_id]
+        
         self.x, self.y = Gecko.waypoints[0]
         self.pathProgress = 0   # Index for waypoints
         self.floatingPathProgress: float = 0
-        self.hp = self.template.data["maxHP"]
-        self.money = self.template.data["money"]
+        self.hp = self.template["maxHP"]
+        self.money = self.template["money"]
         self.xMod = 0
         self.yMod = 0
         self.setDirection(3)
@@ -85,8 +93,8 @@ class Gecko:
                 self.setDirection(1 + self.yMod)  # Magic
 
     def update(self, dt, events):
-        self.x += self.template.data["movement"] * dt * self.xMod
-        self.y += self.template.data["movement"] * dt * self.yMod
+        self.x += self.template["movement"] * dt * self.xMod
+        self.y += self.template["movement"] * dt * self.yMod
 
         if self.pathProgress < len(Gecko.waypoints) - 1:
             self.floatingPathProgress = self.pathProgress + 1 - (
