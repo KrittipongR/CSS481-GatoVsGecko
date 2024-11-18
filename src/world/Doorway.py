@@ -12,11 +12,18 @@ class Doorway:
         self.height = 96
         self.width = 48
 
+        self.DOOR_CLOSE_EVENT = pygame.USEREVENT + 1
+
     def get_coordinates(self):
         return (MAP_WIDTH - 1, MAP_HEIGHT // 2)
         
     def open_door(self):
         self.open = True
+        pygame.time.set_timer(self.DOOR_CLOSE_EVENT, 1000)
+
+    def close_door(self):
+        self.open = False
+        pygame.time.set_timer(self.DOOR_CLOSE_EVENT, 0)
 
     def render(self, screen, offset_x, offset_y):
         self.x = self.x + offset_x

@@ -90,13 +90,13 @@ class ShopState(BaseState):
                         self.last_item_bought = selected_item
                     self.item_display_time = pygame.time.get_ticks()
                     self.insufficient_funds = False
-                    gSounds['select'].play()
+                    gSounds['buy'].play()
                 else:
                     print("Not enough money to buy this item.")
                     self.insufficient_funds = True
                     self.insufficient_funds_time = pygame.time.get_ticks()
                     self.last_item_bought = None
-                    gSounds['game_over'].play()
+                    gSounds['broke'].play()
 
         if self.back_button.update():
             g_state_machine.Change('play', {
@@ -117,6 +117,9 @@ class ShopState(BaseState):
         # Display player's current money
         money_text = draw_text(f"Money: {self.player_inventory['MONEY']} coin(s)", 'small', (255, 255, 0))
         screen.blit(money_text, (20, 20))
+
+        life_text = draw_text(f"Lives: {self.player_inventory['LIFE']}", 'small', (255, 255, 0))
+        screen.blit(life_text, (20, 40))
 
         for i, button in enumerate(self.item_buttons):
             if button.hover:
