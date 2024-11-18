@@ -42,14 +42,17 @@ class PlayState(BaseState):
         self.btn_block = Button(draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 11))
         # self.btn_life = Button(draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
         
-        self.t_setting = 'SETTINGS'
-        self.btn_setting = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (HEIGHT - 48))
+        self.selectedPlaceable = None
+        self.placementToggle = True
+        
+        self.t_setting = 'TOGGLE :3'
+        self.btn_setting_toggle = Button(draw_text(self.t_setting, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (HEIGHT - 48))
 
         # Init Stage
         self.wave = 1
         self.stage = Stage()
 
-        self.selectedPlaceable = None
+        
 
     def Enter(self, params):
         pass
@@ -96,10 +99,10 @@ class PlayState(BaseState):
         # else:
         #     self.btn_life.image = draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255))
 
-        if self.btn_setting.hover:
-            self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 0))
+        if self.placementToggle:
+            self.btn_setting_toggle.image = draw_text(self.t_setting, 'small', (255, 255, 0))
         else:
-            self.btn_setting.image = draw_text(self.t_setting, 'small', (255, 255, 255))
+            self.btn_setting_toggle.image = draw_text(self.t_setting, 'small', (255, 255, 255))
 
     def update(self, dt, events):
 
@@ -120,31 +123,32 @@ class PlayState(BaseState):
         
         if self.btn_sword.update() and self.inventory["SWORD"] > 0:
             gSounds['select'].play()
-            self.selectedPlaceable = "SWORD"
+            self.selectedPlaceable = "SWORD" if self.selectedPlaceable == None else None
 
         if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
             gSounds['select'].play()
-            self.selectedPlaceable = "ARROW"
+            self.selectedPlaceable = "ARROW" if self.selectedPlaceable == None else None
 
         if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
             gSounds['select'].play()
-            self.selectedPlaceable = "BOMB"
+            self.selectedPlaceable = "BOMB" if self.selectedPlaceable == None else None
 
         if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
             gSounds['select'].play()
-            self.selectedPlaceable = "SNIPER"
+            self.selectedPlaceable = "SNIPER" if self.selectedPlaceable == None else None
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
-            self.selectedPlaceable = "BLOCK"
+            self.selectedPlaceable = "BLOCK" if self.selectedPlaceable == None else None
         
         # if self.btn_life.update() and self.inventory["LIFE"] > 0:
         #     gSounds['select'].play()
         #     self.inventory["LIFE"] -= 1
 
-        if self.btn_setting.update():
+        if self.btn_setting_toggle.update():
             gSounds['select'].play()
             print("Settings button clicked")
+            self.placementToggle = not self.placementToggle
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -165,7 +169,8 @@ class PlayState(BaseState):
                         self.inventory[self.selectedPlaceable] -= 1
                     else:
                         print("Placement rejected")
-                    self.selectedPlaceable = None
+                    if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
+                        self.selectedPlaceable = None
 
         for gecko in self.stage.geckos:
             if gecko.reached:
@@ -195,7 +200,7 @@ class PlayState(BaseState):
         self.btn_bomb.render(screen)
         self.btn_sniper.render(screen)
         self.btn_block.render(screen)
-        self.btn_setting.render(screen)
+        self.btn_setting_toggle.render(screen)
 
         # Sanity Check
         # image = pygame.image.load("./graphics/gato_DownRight.png")
