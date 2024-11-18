@@ -98,22 +98,31 @@ class Gato:
                 self.projectiles.remove(projectile)
 
 
-        # Attacking        
+        # Update projectiles
+        for projectile in self.projectiles:
+            projectile.update(dt)
+            if not projectile.active:
+                self.projectiles.remove(projectile)
+
+        # Attacking
         if self.targets:
             if self.attackTimer <= 0:
                 match self.targeting:
                     case "first":
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
-                        self.projectiles.append(Projectile(self.x, self.y, target.x, target.y, 300, self.damage))
-   
+
+                        # Create a projectile targeting the gecko
+                        self.projectiles.append(Projectile(self.x, self.y, target, 300, self.damage))
+
+                        # Play sound effect
                         gSounds["hurt"].play()
 
-                        font_size = gFonts['small'].size(f'-{self.damage}')                    
+                        # Damage number rendering logic (unchanged)
+                        font_size = gFonts['small'].size(f'-{self.damage}')
                         number = gFonts['small'].render(f'-{self.damage}', False, (255, 255, 255))
                         self.dmgNumbers.append([number, (target.x - font_size[0] / 2, target.y - (TILE_SIZE + font_size[1]) / 2), 0.5])
                         self.attackTimer = self.period
-                        # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
             else:
                 self.attackTimer -= dt
 
