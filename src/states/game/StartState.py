@@ -29,7 +29,7 @@ class StartState(BaseState):
             'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':4,
+            'MONEY':100,
             'RESET': True
         })
 
