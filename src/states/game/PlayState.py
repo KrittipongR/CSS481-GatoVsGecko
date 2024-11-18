@@ -141,6 +141,7 @@ class PlayState(BaseState):
     def update(self, dt, events):
 
         self.mouse_x,self.mouse_y = pygame.mouse.get_pos()
+        self.mouse_pos = pygame.mouse.get_pos()
 
         if self.inventory["LIFE"] <= 0:
             g_state_machine.Change('game_over')
@@ -217,6 +218,24 @@ class PlayState(BaseState):
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
                         self.hold = None
+            
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:  # Right-click
+                grid = convertCoordsToGrid(self.mouse_pos)
+                if grid != (-1, -1):  # Valid grid position
+                    if self.hold:
+                        new_row, new_col = grid
+                        if self.stage.moveTower(self.hold.row, self.hold.col, new_row, new_col):
+                            print(f"Gato moved to ({new_row}, {new_col})")
+                        else:
+                            print("Failed to move Gato.")
+                        self.hold = None  # Release hold after moving
+                    else:
+                        # Select a tower if not already holding one
+                        for gato in self.stage.gatos:
+                            if gato.row == grid[0] and gato.col == grid[1]:
+                                self.hold = gato  # Hold the selected tower
+                                print(f"Selected Gato at ({gato.row}, {gato.col})")
+                                break
 
         for gecko in self.stage.geckos:
             if gecko.hp <= 0:
@@ -263,6 +282,6 @@ class PlayState(BaseState):
             else:
                 self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL) # type: ignore
                 screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
-            
+
     def Exit(self):
         pass

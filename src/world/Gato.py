@@ -67,6 +67,14 @@ class Gato:
 
     def addTarget(self, gecko):
         self.targets.append(gecko)
+    
+    def updatePosition(self, row, col):
+        """Update Gato's position based on grid coordinates."""
+        self.row = row
+        self.col = col
+        (self.x, self.y) = convertGridToCoords((row, col))  # Update world coordinates
+        print(f"Gato moved to grid: ({self.row}, {self.col})")
+
 
     def update(self, dt, events):
 

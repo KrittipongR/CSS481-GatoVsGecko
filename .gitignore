@@ -163,3 +163,13 @@ cython_debug/
 
 *.pyc
 .vscode/settings.json
+*.pyc
+src/__pycache__/Constants.cpython-311.pyc
+src/__pycache__/Dependencies.cpython-311.pyc
+src/__pycache__/Resources.cpython-311.pyc
+src/__pycache__/Util.cpython-311.pyc
+src/__pycache__/StateMachine.cpython-311.pyc
+src/states/__pycache__/BaseState.cpython-311.pyc
+src/states/game/__pycache__/PlayState.cpython-311.pyc
+src/states/game/__pycache__/GameOverState.cpython-311.pyc
+src/states/game/__pycache__/StartState.cpython-311.pyc

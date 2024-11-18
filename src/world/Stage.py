@@ -143,6 +143,26 @@ class Stage:
     #             gato.setDirection(gato.currentDirection + 1)
     #             break
 
+    def moveTower(self, old_row, old_col, new_row, new_col):
+            # Find the tower at the old position
+            for gato in self.gatos:
+                if gato.row == old_row and gato.col == old_col:
+                    # Validate the new position
+                    if self.nodeManager.addBlock(new_row, new_col):
+                        # Update the tower's position
+                        node_to_remove = next((node for node in self.nodeManager.nodeList if node.col == old_col and old_row in range(node.row1, node.row2 + 1)),None)
+                        if node_to_remove:
+                            self.nodeManager.removeNode(node_to_remove)
+                        else:
+                            raise ValueError(f"No node found at row {old_row}, column {old_col}.")
+                        self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
+                        gato.row, gato.col = new_row, new_col
+                        return True
+                    else:
+                        print("Invalid move: Target position is occupied or invalid.")
+            return False
+
+
     def update(self, dt, events):
         if not self.geckoQueue and not self.geckos:
             self.state = 0
