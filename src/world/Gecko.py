@@ -55,6 +55,7 @@ class Gecko:
         self.currentDirection = 3
         self.updateWaypoint()
         self.reached = False
+        self.geckoDoor = False
         print("gecko generated at: " + str(self.x) + ", " + str(self.y))
 
     def setDirection(self, direction):
@@ -95,6 +96,9 @@ class Gecko:
                 self.reached = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
 
+            elif self.pathProgress == len(Gecko.waypoints) - 2:
+                self.geckoDoor = True
+            
             else:
                 self.updateWaypoint()
 
