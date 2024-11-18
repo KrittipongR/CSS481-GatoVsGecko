@@ -292,11 +292,11 @@ class PlayState(BaseState):
             if gecko.hp <= 0:
                 self.inventory['MONEY']+= gecko.money
             if gecko.reached:
-                self.inventory["LIFE"] -= 1
                 self.stage.geckos.remove(gecko)
             if gecko.geckoDoor and not self.doorway.open:
                 gSounds['door'].play()                
                 self.doorway.open_door()
+                self.inventory["LIFE"] -= 1
 
         if self.stage.geckos == []:
             self.wave = False
