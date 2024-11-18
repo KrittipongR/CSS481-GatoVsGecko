@@ -99,8 +99,8 @@ class PlayState(BaseState):
     
     def buttonHover(self):
         # Change button color based on hover status
-        if self.wave == False:
-            if self.btn_ready.hover or self.stage.state == 1:
+        if self.stage.state == 0:
+            if self.btn_ready.hover:
                 self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 0))
             else:
                 self.btn_ready.image = draw_text(self.t_ready, 'small', (255, 255, 255))
@@ -162,18 +162,13 @@ class PlayState(BaseState):
         # Lives display
 
         # Check if each button is clicked by calling `update`
-
-        if self.stage.state == 0:
-            self.wave = False
-
-        
+       
         if self.chinook == []:
             if self.btn_ready.update():
-                if self.wave == True:
+                if self.stage.state == 1:
                     gSounds['broke'].play()
                 else:
                     gSounds['select'].play()
-                    self.wave = True
                     print("Current Wave:" + str(self.diff))
                     # self.stage.GenerateEntities(wave=self.wave)
                     self.stage.GenerateWaves(difficulty=self.diff)
@@ -228,10 +223,6 @@ class PlayState(BaseState):
                 else:
                     self.selectedPlaceable = None
                     self.hold = None
-        
-        # if self.btn_life.update() and self.inventory["LIFE"] > 0:
-        #     gSounds['select'].play()
-        #     self.inventory["LIFE"] -= 1
 
             if self.btn_setting_toggle.update():
                 gSounds['select'].play()
