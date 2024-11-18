@@ -169,7 +169,6 @@ class PlayState(BaseState):
                     gSounds['broke'].play()
                 else:
                     gSounds['select'].play()
-                    print("Current Wave:" + str(self.diff))
                     # self.stage.GenerateEntities(wave=self.wave)
                     self.stage.GenerateWaves(difficulty=self.diff)
                     self.diff += 1
@@ -226,7 +225,6 @@ class PlayState(BaseState):
 
             if self.btn_setting_toggle.update():
                 gSounds['select'].play()
-                print("Settings button clicked")
                 self.placementToggle = not self.placementToggle
 
         for event in events:
@@ -250,18 +248,15 @@ class PlayState(BaseState):
                     if self.chinook != []:
                         new_row, new_col = grid
                         if self.stage.moveTower(self.chinook[0], self.chinook[1], new_row, new_col):
-                            print(f"Gato moved to ({new_row}, {new_col})")
                             self.hold = None  # Release hold after moving
                             self.chinook = []
                         else:
-                            print("Failed to move Gato.")
                             self.hold = None  # Release hold after moving
                             self.chinook = []
                     elif self.selectedPlaceable is not None:
                         if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                             self.inventory[self.selectedPlaceable] -= 1
                         else:
-                            print("Placement rejected")
                             self.invalid_pos = True
                             self.invalid_pos_time = pygame.time.get_ticks()
                         if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
@@ -277,7 +272,6 @@ class PlayState(BaseState):
                             # Hold the selected tower
                             oldGrid = convertCoordsToGrid((gato.x, gato.y))
                             self.chinook = list(grid)
-                            print(f"Selected Gato at ({oldGrid[0]}, {oldGrid[1]})")
 
                             self.hold = self.holdTower(template_id=gato.template_id,lvl=gato.lvl)
                             gato.show = False

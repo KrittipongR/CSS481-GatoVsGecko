@@ -1,7 +1,8 @@
 import pygame
 import math
+from src.Util import calculateDistance
 class Projectile:
-    def __init__(self, start_x, start_y, target, speed, damage):
+    def __init__(self, start_x, start_y, target, speed, damage, aoe):
         self.x = start_x
         self.y = start_y
         self.target = target  # Reference to the target (e.g., a Gecko instance)
@@ -13,6 +14,7 @@ class Projectile:
         self.vx = self.speed * math.cos(self.angle)
         self.vy = self.speed * math.sin(self.angle)
         self.active = True
+        self.aoe = aoe
 
     def update(self, dt):
         """Update the projectile's position and check for collision with the target."""
@@ -20,9 +22,14 @@ class Projectile:
         self.y += self.vy * dt
 
         # Check if the projectile has hit the target
-        if math.hypot(self.target_x - self.x, self.target_y - self.y) < 5:  # Adjust threshold as needed
+        if calculateDistance((self.target_x, self.target_y), (self.x, self.y)) < 5:
+        # if math.hypot(self.target_x - self.x, self.target_y - self.y) < 5:  # Adjust threshold as needed
             self.active = False
             self.target.hp -= self.damage  # Apply damage to the target
+            if self.aoe > 0:
+                # give up
+                pass
+
 
     def render(self, screen: pygame.Surface):
         """Render the projectile."""

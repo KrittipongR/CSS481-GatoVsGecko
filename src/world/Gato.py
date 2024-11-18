@@ -21,7 +21,6 @@ class Gato:
         self.row = row
         self.col = col
         self.lvl = lvl
-        print("gato placed at grid: " + str(self.row) + ", " + str(self.col))
         self.direction=90
         self.setDirection(90)
 
@@ -35,6 +34,7 @@ class Gato:
             self.targeting: str = "first"
         self.damage: int = self.template["damage"][self.lvl-1]
         self.period: float = self.template["period"][self.lvl-1]
+        self.aoe: float = self.template["aoe"][self.lvl-1]
         self.attackTimer: float = 0
         self.exclamationTimer = 0
         self.isAttacking = False
@@ -86,7 +86,6 @@ class Gato:
         self.row = row
         self.col = col
         (self.x, self.y) = convertGridToCoords((row, col))  # Update world coordinates
-        print(f"Gato moved to grid: ({self.row}, {self.col})")
 
 
     def update(self, dt, events):
@@ -124,7 +123,7 @@ class Gato:
                         target = self.targets.pop()
 
                         # Create a projectile targeting the gecko
-                        self.projectiles.append(Projectile(self.x, self.y, target, 300, self.damage))
+                        self.projectiles.append(Projectile(self.x, self.y, target, 300, self.damage, self.aoe))
 
                         # Play sound effect
                         gSounds["hurt"].play()

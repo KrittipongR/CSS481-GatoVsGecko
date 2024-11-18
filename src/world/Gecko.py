@@ -10,10 +10,6 @@ class Gecko:
         # Goal: Minimize turns by finding the row that yields the longest straight line in each step
         currentNode = 0
         Gecko.waypoints = []
-        # print("printing nodes:")
-        # for node in path:
-        #     print(node.col, node.row1, node.row2)
-        # previousRow = 0
         while currentNode < len(path) - 1:
             maxLength = 0
             bestRow = 0
@@ -32,8 +28,6 @@ class Gecko:
             # previousRow = bestRow
         if convertGridToCoords((7, 21)) not in Gecko.waypoints:
             Gecko.waypoints.insert(-1, convertGridToCoords((7, 21)))
-        # Gecko.waypoints.append(convertGridToCoords((7, 22)))
-        # print(Gecko.waypoints)
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
@@ -67,7 +61,6 @@ class Gecko:
         self.updateWaypoint()
         self.reached = False
         self.geckoDoor = False
-        print("gecko generated at: " + str(self.x) + ", " + str(self.y))
 
     def setDirection(self, direction):
         if direction < 2:
@@ -102,8 +95,6 @@ class Gecko:
             self.floatingPathProgress = self.pathProgress + 1 - (
                 calculateDistance((self.x, self.y), Gecko.waypoints[self.pathProgress + 1]) / calculateDistance(Gecko.waypoints[self.pathProgress], Gecko.waypoints[self.pathProgress + 1])
             )
-
-        # print(self.floatingPathProgress)
 
         if  (self.x >= self.waypoint[0] and self.xMod == 1) or \
             (self.x <= self.waypoint[0] and self.xMod == -1) or \

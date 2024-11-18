@@ -33,8 +33,6 @@ class NodeManager:
     #                 self.addNode(range(node1.row1, node2.row2 + 1), col)
 
     def removeBlock(self, grid: tuple[int, int]):
-        print("BLOCKS")
-        print(self.blocks)
         for block in self.blocks:
             if block == grid:
                 self.blocks.remove(block)
@@ -43,9 +41,6 @@ class NodeManager:
 
     def refreshColumn(self, col:int):
         for node in self.getNodesByColumn(col):
-            print("NODE REMOVED:")
-            print((node.col, node.row1, node.row2))
-            print("---------------")
             self.removeNode(node)
 
         blockRows = [block[0] for block in self.blocks if block[1] == col]
@@ -123,8 +118,6 @@ class NodeManager:
                 self.currentPath = pathResult[0]
                 break
         else:
-            print("-- No path found, the algorithm has halted --")
-            print("Falling back to previous path.")
             self.currentPath = []
                 
             
@@ -141,10 +134,6 @@ class NodeManager:
                 self.removeNode(node)
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
-                if not validateOnly:
-                    print("printing ALL nodes")
-                    for node2 in self.nodeList:
-                        print((node2.col, node2.row1, node2.row2))
 
                 if self.currentPath == [] or validateOnly:
                     if topNode is not None:
