@@ -1,6 +1,6 @@
 import pygame
 import math
-from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid
+from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateDistance
 from src.Constants import *
 
 class Gecko:
@@ -30,11 +30,19 @@ class Gecko:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
             # previousRow = bestRow
-        Gecko.waypoints.append(convertGridToCoords((7, 21)))
-        Gecko.waypoints.append(convertGridToCoords((7, 22)))
+        # Gecko.waypoints.append(convertGridToCoords((7, 21)))
+        # Gecko.waypoints.append(convertGridToCoords((7, 22)))
+        print(Gecko.waypoints)
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning
+    
+    templates = {}
+    
+    for i in range(1, 4):
+        send_help = Template("gecko", i)
+        templates[i] = send_help.data
+
     names = {
         1: "gecko",
         2: "jinglen",
@@ -44,17 +52,20 @@ class Gecko:
 
     def __init__(self, template_id=1):
         self.template_id = template_id
-        self.template = Template("gecko", self.template_id)
+        self.template: dict = Gecko.templates[self.template_id]
+        
         self.x, self.y = Gecko.waypoints[0]
         self.pathProgress = 0   # Index for waypoints
-        self.hp = self.template.data["maxHP"]
-        self.money = self.template.data["money"]
+        self.floatingPathProgress: float = 0
+        self.hp = self.template["maxHP"]
+        self.money = self.template["money"]
         self.xMod = 0
         self.yMod = 0
         self.setDirection(3)
         self.currentDirection = 3
         self.updateWaypoint()
         self.reached = False
+        self.geckoDoor = False
         print("gecko generated at: " + str(self.x) + ", " + str(self.y))
 
     def setDirection(self, direction):
@@ -82,8 +93,15 @@ class Gecko:
                 self.setDirection(1 + self.yMod)  # Magic
 
     def update(self, dt, events):
-        self.x += self.template.data["movement"] * dt * self.xMod
-        self.y += self.template.data["movement"] * dt * self.yMod
+        self.x += self.template["movement"] * dt * self.xMod
+        self.y += self.template["movement"] * dt * self.yMod
+
+        if self.pathProgress < len(Gecko.waypoints) - 1:
+            self.floatingPathProgress = self.pathProgress + 1 - (
+                calculateDistance((self.x, self.y), Gecko.waypoints[self.pathProgress + 1]) / calculateDistance(Gecko.waypoints[self.pathProgress], Gecko.waypoints[self.pathProgress + 1])
+            )
+
+        # print(self.floatingPathProgress)
 
         if  (self.x >= self.waypoint[0] and self.xMod == 1) or \
             (self.x <= self.waypoint[0] and self.xMod == -1) or \
@@ -95,6 +113,9 @@ class Gecko:
                 self.reached = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
 
+            elif self.pathProgress == len(Gecko.waypoints) - 2:
+                self.geckoDoor = True
+            
             else:
                 self.updateWaypoint()
 

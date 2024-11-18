@@ -254,8 +254,9 @@ def convertCoordsToGrid(coords: tuple[int, int]) -> tuple[int, int]:
     else:
         return (-1, -1)
     
-def calculateRadius(origin: tuple[float, float], target: tuple[float, float], radius: float) -> bool:
-    x1, y1 = origin
-    x2, y2 = target
-    distance = math.sqrt((x1-x2)**2 + (y1-y2)**2)
-    return distance <= radius
+def calculateDistance(origin: tuple[float, float], target: tuple[float, float]) -> float:
+    return math.hypot((origin[0]-target[0]), (origin[1]-target[1]))
+
+def calculateAngle(origin: tuple[float, float], target: tuple[float, float]) -> float:
+    # return math.degrees(math.atan2((origin[1]-target[1]), (origin[0]-target[0]))) + 180
+    return 90 - math.degrees(math.asin((target[1]-origin[1])/(target[0]-origin[0])))

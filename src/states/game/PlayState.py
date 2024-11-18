@@ -6,6 +6,7 @@ from src.StateMachine import *
 from src.states.BaseState import *
 from src.Util import Button
 from src.world.Stage import Stage
+from src.world.Doorway import Doorway
 
 from src.Util import convertGridToCoords, convertCoordsToGrid
 
@@ -21,14 +22,16 @@ class PlayState(BaseState):
         self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
         self.t_shop = 'SHOP'
         self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
+
+        self.doorway = Doorway("right", False, None)
         
         # Items available to buy
         self.inventory = {
             'LIFE': 12,
-            'SWORD': 1,
-            'ARROW': 1,
-            'BOMB': 1,
-            'SNIPER': 1,
+            'SWORD': 4,
+            'ARROW': 4,
+            'BOMB': 4,
+            'SNIPER': 4,
             'BLOCK': 30,
             'LOOT BOX': 0,
             'MONEY':100
@@ -81,9 +84,7 @@ class PlayState(BaseState):
             'MONEY': params['MONEY']
         }
         if params['RESET']:
-            self.stage.geckos.clear()
-            self.stage.gatos.clear()
-            self.stage.objects.clear()
+            self.stage = Stage()
         
     
     def buttonHover(self):
@@ -197,11 +198,15 @@ class PlayState(BaseState):
                     g_state_machine.Change('game_over')
                 # if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                 #     self.stage.rotateGato(grid)
+
+            if event.type == self.doorway.DOOR_CLOSE_EVENT:
+                self.doorway.close_door()
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                         self.inventory[self.selectedPlaceable] -= 1
+                        print(self.stage.gatos)
                         self.hold = None
                     else:
                         print("Placement rejected")
@@ -210,19 +215,20 @@ class PlayState(BaseState):
 
         for gecko in self.stage.geckos:
             if gecko.hp == 0:
-                if gecko.reached:
-                    gSounds['game_over'].play()
-                    self.inventory["LIFE"] -= 1
-                    self.stage.geckos.remove(gecko)
-                else:
-                    self.inventory['money']+= gecko.money
-                    gSounds['dead'].play()
+                self.inventory['MONEY']+= gecko.money
+            if gecko.reached:
+                self.inventory["LIFE"] -= 1
+                self.stage.geckos.remove(gecko)
+            if gecko.geckoDoor:
+                gSounds['door'].play()                
+                self.doorway.open_door()
         
         self.buttonHover()
         self.stage.update(dt, events)
     
     def render(self, screen):
         self.stage.render(screen, 0, 0)
+        self.doorway.render(screen, 0, 0)
 
         self.lives_text = draw_text(f'LIVES: {self.inventory["LIFE"]}', 'small', (255, 255, 255))
         self.lives_text_rect = self.lives_text.get_rect()

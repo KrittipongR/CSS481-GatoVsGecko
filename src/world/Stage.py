@@ -16,7 +16,7 @@ from src.StateMachine import StateMachine
 # from src.object_defs import *
 
 from src.world.NodeManager import NodeManager
-from src.Util import calculateRadius
+from src.Util import calculateDistance
 
 class Stage:
     def __init__(self):
@@ -92,7 +92,16 @@ class Stage:
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath[::-1])
             match type:
+                
                 case "BLOCK":
+                    for object in self.objects:
+                        if object.row == row and object.col == col:
+                            return False
+                    
+                    for gato in self.gatos:
+                        if gato.row == row and gato.col == col:
+                            return False
+
                     self.objects.append(Blockade(row, col))
                 case "SNIPER" | "ARROW" | "BOMB" | "SWORD":
                     templates = {
@@ -101,6 +110,22 @@ class Stage:
                         "BOMB": 3,
                         "SWORD": 4                        
                     }
+                    for object in self.objects:
+                        if object.row == row and object.col == col:
+                            return False
+                    
+                    for gato in self.gatos:
+                        if gato.row == row and gato.col == col:
+                            print(gato.template_id)
+                            if templates[type]==gato.template_id:
+                                
+                                gato.lvl += 1
+                                print("Upgrade to lvl",gato.lvl)
+                                gato.setDirection(90)
+                                return True
+                            else:
+                                return False
+                        
                     self.gatos.append(Gato(row,col, template_id=templates[type]))
                 case _:
                     return False
@@ -137,7 +162,7 @@ class Stage:
         for gato in self.gatos:
             gato.clearTargets()
             for gecko in self.geckos:
-                if calculateRadius((gato.x, gato.y), (gecko.x, gecko.y), gato.attackRadius):                    
+                if calculateDistance((gato.x, gato.y), (gecko.x, gecko.y)) <= gato.attackRadius:                    
                     gato.addTarget(gecko)
 
             gato.update(dt, events)

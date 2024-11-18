@@ -12,9 +12,9 @@ class NodeManager:
         self.nodeList: List[Node] = []
         self.currentNodeID = 0
         self.currentPath: List[Node] = []
-        for i in range(self.mapCols - 1):
+        for i in range(self.mapCols):
             self.addNode(range(1, mapRows-1), i)
-        self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 2))   # Final node at the door (row 7)
+        self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 1))   # Final node at the door (row 7)
         self.nodeConnectionLoop()
 
     def addNode(self, range:range, col:int) -> int:
@@ -105,6 +105,11 @@ class NodeManager:
                 self.removeNode(node)
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
+
+                print("printing ALL nodes")
+                for node2 in self.nodeList:
+                    print((node2.col, node2.row1, node2.row2))
+
                 if self.currentPath == []:
                     if topNode is not None:
                         self.removeNode(self.getNodeByID(topNode))

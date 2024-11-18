@@ -1,6 +1,6 @@
 import pygame
 import math
-from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid
+from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateAngle
 from src.Constants import *
 
 class Gato:
@@ -12,11 +12,16 @@ class Gato:
         self.col = col
         self.lvl = lvl
         print("gato placed at grid: " + str(self.row) + ", " + str(self.col))
+        self.direction=90
         self.setDirection(90)
 
 
         self.targets = []
-        self.attackRadius: float = self.template.data["range"]
+        self.attackRadius: float = self.template.data["range"] * 10
+        try:
+            self.targeting: str = self.template.data["targeting"]
+        except KeyError:
+            self.targeting: str = "first"
         #
 
     names = {
@@ -28,6 +33,7 @@ class Gato:
 
     def setDirection(self, direction):
         direction = direction % 360
+        self.direction=direction
         path = "./sprites/gato_UpLeft.json"
         self.sprite_collection = SpriteManager([path]).spriteCollection
         self.sprite_name = Gato.names[self.template_id] + "_left_" + str(self.lvl)
@@ -52,8 +58,14 @@ class Gato:
         self.targets.append(gecko)
 
     def update(self, dt, events):
-
-        pass
+        # Attacking
+        if self.targets:
+            match self.targeting:
+                case "first":
+                    self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
+                    target = self.targets.pop()
+                    # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
+            pass
 
     def render(self, screen):       
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
