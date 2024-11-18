@@ -82,12 +82,25 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self, wave=1):
+    def GenerateEntities(self, gecko=None):
         #self.geckoQueue.append(...)
         self.state = 1
-        self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
+        if gecko == "Normal":
+            self.geckos.append(Gecko(template_id=1))
+        elif gecko == "Fast":
+            self.geckos.append(Gecko(template_id=2))
+        elif gecko == "Chad":
+            self.geckos.append(Gecko(template_id=3))
+        elif gecko == "Jagras":
+            self.geckos.append(Gecko(template_id=4))
+        else:
+            self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
         print(self.geckos[-1].templates)
-        pass
+
+    def GenerateWaves(self, difficulty=1):
+        for i in range(math.ceil(difficulty)):
+            self.GenerateEntities()
+            
 
     def placeObject(self, row, col, type):      # Blockade
         if self.state == 0 and self.nodeManager.addBlock(row, col):
