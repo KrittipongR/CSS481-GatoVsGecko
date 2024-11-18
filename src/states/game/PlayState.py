@@ -188,7 +188,7 @@ class PlayState(BaseState):
 
         for gecko in self.stage.geckos:
             if gecko.hp == 0:
-                self.inventory['money']+= gecko.money
+                self.inventory['MONEY']+= gecko.money
             if gecko.reached:
                 gSounds['game_over'].play()
                 self.inventory["LIFE"] -= 1
