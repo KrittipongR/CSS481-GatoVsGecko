@@ -222,7 +222,7 @@ class PlayState(BaseState):
                         self.selectedPlaceable = None
                         self.hold = None
             
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:  # Right-click
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3 and self.stage.state == 0:  # Right-click
                 grid = convertCoordsToGrid(self.mouse_pos)
                 if grid != (-1, -1):  # Valid grid position
                     if self.hold and self.selectedPlaceable is None:

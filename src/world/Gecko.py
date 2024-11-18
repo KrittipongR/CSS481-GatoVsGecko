@@ -33,7 +33,7 @@ class Gecko:
         if convertGridToCoords((7, 21)) not in Gecko.waypoints:
             Gecko.waypoints.insert(-1, convertGridToCoords((7, 21)))
         # Gecko.waypoints.append(convertGridToCoords((7, 22)))
-        print(Gecko.waypoints)
+        # print(Gecko.waypoints)
 
     waypoints = []      # Convert path to absolute coordinates [(x1,y1), (x2,y2), (x3,y3), ...]
                         # Gecko only move in cardinal directions so there can be multiple waypoints per node when turning

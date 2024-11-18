@@ -17,8 +17,17 @@ class NodeManager:
         self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 1))   # Final node at the door (row 7)
         self.nodeConnectionLoop()
 
-    def addNode(self, range:range, col:int) -> int:
-        newNode = Node(range, col, self.currentNodeID)
+    def addNode(self, rowRange:range, col:int) -> int:
+
+        for node in self.nodeList:  # Vertically adjacent
+            if node.row2 == rowRange[0] - 1:     
+                newNode = Node(range(node.row1, rowRange[-1] + 1), col, self.currentNodeID)
+                break
+            elif node.row1 == rowRange[-1] + 1:
+                newNode = Node(range(rowRange[0], node.row2 + 1), col, self.currentNodeID)
+                break
+        else:
+            newNode = Node(rowRange, col, self.currentNodeID)
         self.nodeList.append(newNode)
         self.currentNodeID += 1
         return self.currentNodeID - 1
@@ -92,7 +101,7 @@ class NodeManager:
             self.currentPath = []
                 
             
-    def addBlock(self, row:int, col:int) -> bool:   # Splits the node the block (tower/blockade) is on into two nodes
+    def addBlock(self, row:int, col:int, validateOnly:bool = False) -> bool:   # Splits the node the block (tower/blockade) is on into two nodes
         for node in self.getNodesByColumn(col):
             if row in range(node.row1, node.row2+1):
                 temp = (node.row1, node.row2)
@@ -106,11 +115,11 @@ class NodeManager:
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
 
-                print("printing ALL nodes")
-                for node2 in self.nodeList:
-                    print((node2.col, node2.row1, node2.row2))
+                # print("printing ALL nodes")
+                # for node2 in self.nodeList:
+                #     print((node2.col, node2.row1, node2.row2))
 
-                if self.currentPath == []:
+                if self.currentPath == [] or validateOnly:
                     if topNode is not None:
                         self.removeNode(self.getNodeByID(topNode))
                     if bottomNode is not None:
@@ -118,7 +127,7 @@ class NodeManager:
                     self.addNode(range(temp[0], temp[1]+1), col)
                     self.removeAllConnections()
                     self.nodeConnectionLoop()
-                    return False
+                    return False or validateOnly
         
         return True     # Good enough for now?
 

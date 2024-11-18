@@ -148,14 +148,14 @@ class Stage:
             for gato in self.gatos:
                 if gato.row == old_row and gato.col == old_col:
                     # Validate the new position
-                    if self.nodeManager.addBlock(new_row, new_col):
+                    if self.nodeManager.addBlock(new_row, new_col, validateOnly=True):  # Doesn't actually add the block at this step
                         # Update the tower's position
                         for node in self.nodeManager.getNodesByColumn(old_col):
                             if node.row1 == old_row + 1:
-                                self.nodeManager.addNode(range(node.row1 - 1, node.row2 + 1), old_col)
+                                self.nodeManager.addNode(range(old_row, node.row2 + 1), old_col)
                                 self.nodeManager.removeNode(node)
                             elif node.row2 == old_row - 1:
-                                self.nodeManager.addNode(range(node.row1, node.row2 + 2), old_col)
+                                self.nodeManager.addNode(range(node.row1, old_row + 1), old_col)
                                 self.nodeManager.removeNode(node)      
 
 
@@ -165,9 +165,10 @@ class Stage:
                         #     self.nodeManager.removeNode(node_to_remove)
                         # else:
                         #     raise ValueError(f"No node found at row {old_row}, column {old_col}.")
-                        self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
                         gato.moveToGrid((new_row, new_col))
                         gato.show = True
+                        self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
+                        Gecko.setPath(self.nodeManager.currentPath[::-1])
                         return True
                     else:
                         print("Invalid move: Target position is occupied or invalid.")
