@@ -6,27 +6,30 @@ from src.Constants import *
 class Gecko:
 
     @staticmethod
-    def setPath(path):    # Path is given as a list of nodes
+    def setPath(path: list):    # Path is given as a list of nodes
         # Goal: Minimize turns by finding the row that yields the longest straight line in each step
         currentNode = 0
         Gecko.waypoints = []
         print("printing nodes:")
-        for node in path:
-            print(node.col, node.row1, node.row2)
+        # for node in path:
+        #     print(node.col, node.row1, node.row2)
+        # previousRow = 0
         while currentNode < len(path) - 1:
             maxLength = 0
             bestRow = 0
+            
             for row in range(path[currentNode].row1, path[currentNode].row2 + 1):
                 i = 1
                 while currentNode + i < len(path) and row in range(path[currentNode + i].row1, path[currentNode + i].row2 + 1):
                     i += 1
-                if i > maxLength:
+                if i > maxLength or (i == maxLength and abs(row - (path[currentNode].row1 + path[currentNode].row2 // 2)) < abs(bestRow - (path[currentNode].row1 + path[currentNode].row2 // 2))):
                     maxLength = i
                     bestRow = row
             Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode].col)))
             if maxLength > 1:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
+            # previousRow = bestRow
         Gecko.waypoints.append(convertGridToCoords((7, 21)))
         Gecko.waypoints.append(convertGridToCoords((7, 22)))
 

@@ -41,9 +41,6 @@ class Gato:
         wpn_rotation = (direction-1)*90 if direction != 3 else 0
         self.wpn_sprite = pygame.transform.scale(pygame.transform.rotate(self.sprite_collection[self.wpn_sprite_name].image, wpn_rotation), (TILE_SIZE, TILE_SIZE))
 
-        print("gato direction:")
-        print(self.currentDirection)
-
     def update(self, dt, events):
         pass
 
