@@ -6,6 +6,7 @@ from src.StateMachine import *
 from src.states.BaseState import *
 from src.Util import Button
 from src.world.Stage import Stage
+from src.world.Doorway import Doorway
 
 from src.Util import convertGridToCoords, convertCoordsToGrid
 
@@ -21,6 +22,8 @@ class PlayState(BaseState):
         self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
         self.t_shop = 'SHOP'
         self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
+
+        self.doorway = Doorway("right", False, None)
         
         # Items available to buy
         self.inventory = {
@@ -176,6 +179,9 @@ class PlayState(BaseState):
                     g_state_machine.Change('game_over')
                 # if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                 #     self.stage.rotateGato(grid)
+
+            if event.type == self.doorway.DOOR_CLOSE_EVENT:
+                self.doorway.close_door()
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
@@ -188,7 +194,8 @@ class PlayState(BaseState):
 
         for gecko in self.stage.geckos:
             if gecko.reached:
-                gSounds['game_over'].play()
+                gSounds['door'].play()
+                self.doorway.open_door()
                 self.inventory["LIFE"] -= 1
                 self.stage.geckos.remove(gecko)
         
@@ -197,6 +204,7 @@ class PlayState(BaseState):
     
     def render(self, screen):
         self.stage.render(screen, 0, 0)
+        self.doorway.render(screen, 0, 0)
 
         self.lives_text = draw_text(f'LIVES: {self.inventory["LIFE"]}', 'small', (255, 255, 255))
         self.lives_text_rect = self.lives_text.get_rect()

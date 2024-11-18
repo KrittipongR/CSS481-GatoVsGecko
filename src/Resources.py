@@ -17,7 +17,7 @@ g_state_machine = StateMachine()
 #                     sprite_collection["X"].image, sprite_collection["Y"].image]
 
 gStage_image_list = Util.GenerateTiles("./graphics/tilesheet_2.png", 16, 16)
-gDoor_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16, colorkey=(13, 7, 17, 255))
+gDoor_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16, colorkey=None)
 
 gFonts ={
     'small': pygame.font.Font('fonts/font.ttf', 24),
@@ -28,5 +28,6 @@ gFonts ={
 gSounds = {
     'music': pygame.mixer.Sound('sounds/dawn-of-war-DSTechnician.mp3'),
     'select': pygame.mixer.Sound('sounds/select.wav'),
-    'game_over': pygame.mixer.Sound('sounds/game over.wav')
+    'game_over': pygame.mixer.Sound('sounds/game over.wav'),
+    'door': pygame.mixer.Sound('sounds/door.wav')
 }
