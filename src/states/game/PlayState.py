@@ -69,9 +69,7 @@ class PlayState(BaseState):
             'MONEY': params['MONEY']
         }
         if params['RESET']:
-            self.stage.geckos.clear()
-            self.stage.gatos.clear()
-            self.stage.objects.clear()
+            self.stage = Stage()
         
     
     def buttonHover(self):
