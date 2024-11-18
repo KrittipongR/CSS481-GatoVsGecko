@@ -2,6 +2,7 @@ import pygame
 import math
 from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateAngle
 from src.Constants import *
+from src.Resources import *
 
 class Gato:
 
@@ -23,7 +24,7 @@ class Gato:
         self.direction=90
         self.setDirection(90)
 
-
+        self.dmgNumbers = []
         self.targets = []
         self.attackRadius: float = self.template["range"] * TILE_SIZE
         try:
@@ -68,24 +69,36 @@ class Gato:
         self.targets.append(gecko)
 
     def update(self, dt, events):
-        # Attacking
-        
+
+        for dmgNumber in self.dmgNumbers:
+            if dmgNumber[2] <= 0:
+                self.dmgNumbers.remove(dmgNumber)
+            else:
+                dmgNumber[2] -= dt
+
+        # Attacking        
         if self.targets:
             if self.attackTimer <= 0:
                 match self.targeting:
                     case "first":
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
-                        target.hp -= self.damage
-                        print("ATTACK")
-                        print(target.hp)
+                        target.hp -= self.damage   
+
+                        font_size = gFonts['small'].size(f'-{self.damage}')                    
+                        number = gFonts['small'].render(f'-{self.damage}', False, (255, 255, 255))
+                        self.dmgNumbers.append([number, (target.x - font_size[0] / 2, target.y - (TILE_SIZE + font_size[1]) / 2), 0.5])
                         self.attackTimer = self.period
                         # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
             else:
                 self.attackTimer -= dt
 
-    def render(self, screen):       
+    def render(self, screen: pygame.Surface):       
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         self.wpn_sprite.set_colorkey(self.wpn_sprite.get_at((0, 0)),pygame.RLEACCEL)
         screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
         screen.blit(self.wpn_sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
+
+        for dmgNumber in self.dmgNumbers:
+            screen.blit(dmgNumber[0], dmgNumber[1])
+

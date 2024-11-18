@@ -11,7 +11,7 @@
             
             "colorKey": 1,
             "damage": 10,
-            "period": 5,
+            "period": 3,
             "range": 10,
             "aoe": 1
         
@@ -24,8 +24,8 @@
             
             "colorKey": 1,
             "damage": 5,
-            "period": 2,
-            "range": 5,
+            "period": 1.5,
+            "range": 7,
             "aoe": 1
             
         },
@@ -37,8 +37,8 @@
             
             "colorKey": 1,
             "damage": 5,
-            "period": 3,
-            "range": 3,
+            "period": 2,
+            "range": 5,
             "aoe": 10
         },
         {
@@ -49,8 +49,8 @@
             
             "colorKey": 1,
             "damage":3,
-            "period": 1,
-            "range":1,
+            "period": 0.4,
+            "range":1.75,
             "aoe": 1
         }
     ]
