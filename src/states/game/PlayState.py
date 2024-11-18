@@ -37,6 +37,9 @@ class PlayState(BaseState):
             'MONEY':100
         }
 
+        #Holdinh Tower
+        self.hold = None
+
         # Initialize buttons for each item with dynamic text
         self.btn_sword = Button(draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
         self.btn_arrow = Button(draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
@@ -55,7 +58,19 @@ class PlayState(BaseState):
         self.wave = 1
         self.stage = Stage()
 
-        
+    def holdTower(self,template_id,lvl):
+        #Gato Rendering on button
+        names = {
+            1: "sniper_cat",
+            2: "arrow_cat",
+            3: "bomb_kitty",
+            4: "sameowrai"
+        }
+        path = "./sprites/gato_UpLeft.json"
+        sprite_collection = SpriteManager([path]).spriteCollection
+        sprite_name = names[template_id] + "_left_" + str(lvl)
+        sprite = pygame.transform.smoothscale(sprite_collection[sprite_name].image, (TILE_SIZE, TILE_SIZE))
+        return sprite
 
     def Enter(self, params):
         self.inventory = {
@@ -86,21 +101,25 @@ class PlayState(BaseState):
 
         if self.btn_sword.hover or self.selectedPlaceable == "SWORD":
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 0))
+            
         else:
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255))
 
         if self.btn_arrow.hover or self.selectedPlaceable == "ARROW":
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 0))
+            
         else:
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255))
 
         if self.btn_bomb.hover or self.selectedPlaceable == "BOMB":
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 0))
+            
         else:
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255))
 
         if self.btn_sniper.hover or self.selectedPlaceable == "SNIPER":
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 0))
+            
         else:
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255))
 
@@ -121,6 +140,8 @@ class PlayState(BaseState):
 
     def update(self, dt, events):
 
+        self.mouse_x,self.mouse_y = pygame.mouse.get_pos()
+
         if self.inventory["LIFE"] <= 0:
             g_state_machine.Change('game_over')
 
@@ -138,22 +159,27 @@ class PlayState(BaseState):
         
         if self.btn_sword.update() and self.inventory["SWORD"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=4,lvl=1)
             self.selectedPlaceable = "SWORD" if self.selectedPlaceable == None else None
 
         if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=2,lvl=1)
             self.selectedPlaceable = "ARROW" if self.selectedPlaceable == None else None
 
         if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=3,lvl=1)
             self.selectedPlaceable = "BOMB" if self.selectedPlaceable == None else None
 
         if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=1,lvl=1)
             self.selectedPlaceable = "SNIPER" if self.selectedPlaceable == None else None
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
+            self.hold = "wall"
             self.selectedPlaceable = "BLOCK" if self.selectedPlaceable == None else None
         
         # if self.btn_life.update() and self.inventory["LIFE"] > 0:
@@ -186,10 +212,12 @@ class PlayState(BaseState):
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                         self.inventory[self.selectedPlaceable] -= 1
                         print(self.stage.gatos)
+                        self.hold = None
                     else:
                         print("Placement rejected")
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
+                        self.hold = None
 
         for gecko in self.stage.geckos:
             if gecko.hp == 0:
@@ -230,6 +258,12 @@ class PlayState(BaseState):
         # Sanity Check
         # image = pygame.image.load("./graphics/gato_DownRight.png")
         # screen.blit(image, (0,0))
-
+        if self.hold is not None:
+            if self.hold == "wall":
+                screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
+            else:
+                self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL)
+                screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
+            
     def Exit(self):
         pass
