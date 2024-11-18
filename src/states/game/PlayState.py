@@ -32,13 +32,13 @@ class PlayState(BaseState):
         # Items available to buy
         self.inventory = {
             'LIFE': 12,
-            'SWORD': 4,
-            'ARROW': 4,
-            'BOMB': 4,
-            'SNIPER': 4,
+            'SWORD': 1,
+            'ARROW': 1,
+            'BOMB': 1,
+            'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':100
+            'MONEY':10
         }
 
         # For previewing placement (Just a sprite)
