@@ -62,7 +62,7 @@ class Gato:
                 case "first":
                     self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                     target = self.targets.pop()
-                    self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
+                    # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
             pass
 
     def render(self, screen):       

@@ -258,4 +258,5 @@ def calculateDistance(origin: tuple[float, float], target: tuple[float, float]) 
     return math.hypot((origin[0]-target[0]), (origin[1]-target[1]))
 
 def calculateAngle(origin: tuple[float, float], target: tuple[float, float]) -> float:
-    return math.degrees(math.atan2((origin[1]-target[1]), (origin[0]-target[0]))) + 90
+    # return math.degrees(math.atan2((origin[1]-target[1]), (origin[0]-target[0]))) + 180
+    return 90 - math.degrees(math.asin((target[1]-origin[1])/(target[0]-origin[0])))
