@@ -111,11 +111,9 @@ class Gecko:
             if self.pathProgress == len(Gecko.waypoints) - 1:   # End of the line
                 # DO SOMETHING HERE TO MAKE THE PLAYER LOSE LIVES
                 self.reached = True
+                self.geckoDoor = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
 
-            elif self.pathProgress == len(Gecko.waypoints) - 2:
-                self.geckoDoor = True
-            
             else:
                 self.updateWaypoint()
 

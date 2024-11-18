@@ -23,7 +23,7 @@ class PlayState(BaseState):
         self.t_shop = 'SHOP'
         self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
 
-        self.doorway = Doorway("right", False, None)
+        self.doorway = Doorway(False, None)
         
         # Items available to buy
         self.inventory = {
