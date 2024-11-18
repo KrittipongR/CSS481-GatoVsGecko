@@ -215,6 +215,7 @@ class PlayState(BaseState):
                         self.hold = None
                     else:
                         print("Placement rejected")
+                        self.hold = None
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
                         self.hold = None
@@ -258,7 +259,7 @@ class PlayState(BaseState):
         # Sanity Check
         # image = pygame.image.load("./graphics/gato_DownRight.png")
         # screen.blit(image, (0,0))
-        if self.hold is not None:
+        if self.hold is not None and self.selectedPlaceable is not None:
             if self.hold == "wall":
                 screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
             else:
