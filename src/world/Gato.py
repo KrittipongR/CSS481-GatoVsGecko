@@ -3,6 +3,7 @@ import math
 from src.Util import SpriteManager, Template, convertGridToCoords, convertCoordsToGrid, calculateAngle
 from src.Constants import *
 from src.Resources import *
+from src.world.Projectile import *
 
 class Gato:
 
@@ -26,6 +27,7 @@ class Gato:
 
         self.dmgNumbers = []
         self.targets = []
+        self.projectiles=[]
         self.attackRadius: float = self.template["range"][self.lvl-1] * TILE_SIZE
         try:
             self.targeting: str = self.template["targeting"]
@@ -34,6 +36,11 @@ class Gato:
         self.damage: int = self.template["damage"][self.lvl-1]
         self.period: float = self.template["period"][self.lvl-1]
         self.attackTimer: float = 0
+        self.exclamationTimer = 0
+        self.isAttacking = False
+
+        self.exclamation_font_size = gFonts['small'].size("!")                    
+        self.exclamation = gFonts['small'].render("!", False, (255, 255, 255))
 
         self.show = True
 
@@ -89,6 +96,18 @@ class Gato:
                 self.dmgNumbers.remove(dmgNumber)
             else:
                 dmgNumber[2] -= dt
+        
+        for projectile in self.projectiles:
+            projectile.update(dt)
+            if not projectile.active:
+                self.projectiles.remove(projectile)
+
+
+        if self.exclamationTimer <= 0:
+            self.isAttacking = False
+        else:
+            self.isAttacking = True
+        self.exclamationTimer -= dt
 
         # Attacking        
         if self.targets:
@@ -97,18 +116,24 @@ class Gato:
                     case "first":
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
-                        target.hp -= self.damage   
+                        self.projectiles.append(Projectile(self.x, self.y, target.x, target.y, 300, self.damage))
+   
                         gSounds["hurt"].play()
 
                         font_size = gFonts['small'].size(f'-{self.damage}')                    
                         number = gFonts['small'].render(f'-{self.damage}', False, (255, 255, 255))
                         self.dmgNumbers.append([number, (target.x - font_size[0] / 2, target.y - (TILE_SIZE + font_size[1]) / 2), 0.5])
+                        self.exclamation_coords = (self.x - self.exclamation_font_size[0] / 2, self.y - (TILE_SIZE + self.exclamation_font_size[1] / 2))
                         self.attackTimer = self.period
+                        self.exclamationTimer = 0.1
                         # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
             else:
                 self.attackTimer -= dt
 
-    def render(self, screen: pygame.Surface):       
+    def render(self, screen: pygame.Surface):
+        for projectile in self.projectiles:
+            projectile.render(screen)
+
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         self.wpn_sprite.set_colorkey(self.wpn_sprite.get_at((0, 0)),pygame.RLEACCEL)
         if self.show:
@@ -117,4 +142,7 @@ class Gato:
 
         for dmgNumber in self.dmgNumbers:
             screen.blit(dmgNumber[0], dmgNumber[1])
+        
+        if self.isAttacking:
+            screen.blit(self.exclamation, self.exclamation_coords)
 

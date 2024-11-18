@@ -272,7 +272,8 @@ class Stage:
 
             gato.update(dt, events)
 
-    def render(self, screen, x_mod, y_mod):
+    def render(self, screen, x_mod, y_mod):          
+
         for row in range(self.height):
             for col in range(self.width):
                 tile_id = self.tiles[row][col]
@@ -284,6 +285,9 @@ class Stage:
                     tileImageList = gStage_image_list
                 screen.blit(tileImageList[tile_id-1], (x, y))
                 pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, TILE_SIZE, TILE_SIZE), 1) # Grid outlines
+
+        for i in range(len(Gecko.waypoints)-1):
+            pygame.draw.line(screen, (255, 0, 0), Gecko.waypoints[i], Gecko.waypoints[i+1], 3)  # Line thickness is 3
 
         for doorway in self.doorways:
             doorway.render(screen, self.adjacent_offset_x+x_mod, self.adjacent_offset_y+y_mod)
