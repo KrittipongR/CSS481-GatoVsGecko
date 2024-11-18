@@ -12,7 +12,7 @@ class NodeManager:
         self.nodeList: List[Node] = []
         self.currentNodeID = 0
         self.currentPath: List[Node] = []
-        for i in range(self.mapCols):
+        for i in range(self.mapCols - 1):
             self.addNode(range(1, mapRows-1), i)
         self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 1))   # Final node at the door (row 7)
         self.nodeConnectionLoop()

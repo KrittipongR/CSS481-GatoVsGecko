@@ -37,7 +37,7 @@ class PlayState(BaseState):
             'MONEY':100
         }
 
-        #Holdinh Tower
+        #Holding Tower
         self.hold = None
 
         # Initialize buttons for each item with dynamic text
@@ -261,7 +261,7 @@ class PlayState(BaseState):
             if self.hold == "wall":
                 screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
             else:
-                self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL)
+                self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL) # type: ignore
                 screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
             
     def Exit(self):
