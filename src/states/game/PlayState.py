@@ -259,13 +259,8 @@ class PlayState(BaseState):
                             self.chinook = []
                         else:
                             print("Failed to move Gato.")
-<<<<<<< Updated upstream
                             self.hold = None  # Release hold after moving
                             self.chinook = []
-=======
-                            self.invalid_pos = True
-                            self.invalid_pos_time = pygame.time.get_ticks()
->>>>>>> Stashed changes
                     elif self.selectedPlaceable is not None:
                         if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                             self.inventory[self.selectedPlaceable] -= 1
