@@ -92,7 +92,16 @@ class Stage:
         if self.state == 0 and self.nodeManager.addBlock(row, col):
             Gecko.setPath(self.nodeManager.currentPath[::-1])
             match type:
+                
                 case "BLOCK":
+                    for object in self.objects:
+                        if object.row == row and object.col == col:
+                            return False
+                    
+                    for gato in self.gatos:
+                        if gato.row == row and gato.col == col:
+                            return False
+
                     self.objects.append(Blockade(row, col))
                 case "SNIPER" | "ARROW" | "BOMB" | "SWORD":
                     templates = {
@@ -101,6 +110,22 @@ class Stage:
                         "BOMB": 3,
                         "SWORD": 4                        
                     }
+                    for object in self.objects:
+                        if object.row == row and object.col == col:
+                            return False
+                    
+                    for gato in self.gatos:
+                        if gato.row == row and gato.col == col:
+                            print(gato.template_id)
+                            if templates[type]==gato.template_id:
+                                
+                                gato.lvl += 1
+                                print("Upgrade to lvl",gato.lvl)
+                                gato.setDirection(90)
+                                return True
+                            else:
+                                return False
+                        
                     self.gatos.append(Gato(row,col, template_id=templates[type]))
                 case _:
                     return False

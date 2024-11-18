@@ -23,10 +23,10 @@ class StartState(BaseState):
         if self.btn_play.update():
             g_state_machine.Change('play',enter_params={
             'LIFE': 12,
-            'SWORD': 1,
-            'ARROW': 1,
-            'BOMB': 1,
-            'SNIPER': 1,
+            'SWORD': 4,
+            'ARROW': 4,
+            'BOMB': 4,
+            'SNIPER': 4,
             'BLOCK': 30,
             'LOOT BOX': 0,
             'MONEY':100,
@@ -45,10 +45,10 @@ class StartState(BaseState):
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('play',enter_params={
                         'LIFE': 12,
-                        'SWORD': 1,
-                        'ARROW': 1,
-                        'BOMB': 1,
-                        'SNIPER': 1,
+                        'SWORD': 3,
+                        'ARROW': 3,
+                        'BOMB': 3,
+                        'SNIPER': 3,
                         'BLOCK': 30,
                         'LOOT BOX': 0,
                         'MONEY':4,
