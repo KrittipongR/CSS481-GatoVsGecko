@@ -2,8 +2,7 @@ from src.Constants import *
 from src.Resources import *
 
 class Doorway:
-    def __init__(self, direction, open, room):
-        self.direction = direction
+    def __init__(self, open, room):
         self.open = open
         self.room = room
 

@@ -38,7 +38,7 @@ class Stage:
 
         self.doorways = []
         #self.doorways.append(Doorway('left', False, self))
-        self.doorways.append(Doorway('right', False, self))
+        self.doorways.append(Doorway(False, self))
         
         # centering the dungeon rendering
         self.render_offset_x = MAP_RENDER_OFFSET_X
