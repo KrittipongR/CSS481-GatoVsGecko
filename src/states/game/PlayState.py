@@ -152,48 +152,70 @@ class PlayState(BaseState):
         # Lives display
 
         # Check if each button is clicked by calling `update`
-        if self.btn_ready.update():
-            gSounds['select'].play()
-            print("Ready button clicked")
-            self.stage.GenerateEntities(wave=self.wave)
-        
-        if self.btn_shop.update():
-            gSounds['select'].play()
-            g_state_machine.Change('shop', {"inventory": self.inventory})
-        
-        if self.btn_sword.update() and self.inventory["SWORD"] > 0:
-            gSounds['select'].play()
-            self.hold = self.holdTower(template_id=4,lvl=1)
-            self.selectedPlaceable = "SWORD" if self.selectedPlaceable != "SWORD" else None
+        if self.chinook == []:
+            if self.btn_ready.update():
+                gSounds['select'].play()
+                print("Ready button clicked")
+                self.stage.GenerateEntities(wave=self.wave)
+            
+            if self.btn_shop.update():
+                gSounds['select'].play()
+                g_state_machine.Change('shop', {"inventory": self.inventory})
+            
+            if self.btn_sword.update() and self.inventory["SWORD"] > 0:
+                gSounds['select'].play()            
+                if self.selectedPlaceable != "SWORD":
+                    self.selectedPlaceable = "SWORD"
+                    self.hold = self.holdTower(template_id=4,lvl=1)
+                else:
+                    self.selectedPlaceable = None
+                    self.hold = None
 
-        if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
-            gSounds['select'].play()
-            self.hold = self.holdTower(template_id=2,lvl=1)
-            self.selectedPlaceable = "ARROW" if self.selectedPlaceable != "ARROW" else None
+            if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
+                gSounds['select'].play()
+                if self.selectedPlaceable != "ARROW":
+                    self.selectedPlaceable = "ARROW"
+                    self.hold = self.holdTower(template_id=2,lvl=1)
+                else:
+                    self.selectedPlaceable = None
+                    self.hold = None
 
-        if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
-            gSounds['select'].play()
-            self.hold = self.holdTower(template_id=3,lvl=1)
-            self.selectedPlaceable = "BOMB" if self.selectedPlaceable != "BOMB" else None
+            if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
+                gSounds['select'].play()
+                if self.selectedPlaceable != "BOMB":
+                    self.selectedPlaceable = "BOMB"
+                    self.hold = self.holdTower(template_id=3,lvl=1)
+                else:
+                    self.selectedPlaceable = None
+                    self.hold = None
 
-        if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
-            gSounds['select'].play()
-            self.hold = self.holdTower(template_id=1,lvl=1)
-            self.selectedPlaceable = "SNIPER" if self.selectedPlaceable != "SNIPER" else None
+            if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
+                gSounds['select'].play()
+                if self.selectedPlaceable != "SNIPER":
+                    self.selectedPlaceable = "SNIPER"
+                    self.hold = self.holdTower(template_id=1,lvl=1)
+                else:
+                    self.selectedPlaceable = None
+                    self.hold = None
 
-        if self.btn_block.update() and self.inventory["BLOCK"] > 0:
-            gSounds['select'].play()
-            self.hold = "wall"
-            self.selectedPlaceable = "BLOCK" if self.selectedPlaceable != "BLOCK" else None
+            if self.btn_block.update() and self.inventory["BLOCK"] > 0:
+                gSounds['select'].play()
+                self.hold = "wall"
+                if self.selectedPlaceable != "BLOCK":
+                    self.selectedPlaceable = "BLOCK"
+                    self.hold = "wall"
+                else:
+                    self.selectedPlaceable = None
+                    self.hold = None
         
         # if self.btn_life.update() and self.inventory["LIFE"] > 0:
         #     gSounds['select'].play()
         #     self.inventory["LIFE"] -= 1
 
-        if self.btn_setting_toggle.update():
-            gSounds['select'].play()
-            print("Settings button clicked")
-            self.placementToggle = not self.placementToggle
+            if self.btn_setting_toggle.update():
+                gSounds['select'].play()
+                print("Settings button clicked")
+                self.placementToggle = not self.placementToggle
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -212,39 +234,39 @@ class PlayState(BaseState):
                 self.doorway.close_door()
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
-                    if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
-                        self.inventory[self.selectedPlaceable] -= 1
-                        print(self.stage.gatos)
-                    else:
-                        print("Placement rejected")
-                    if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
-                        self.selectedPlaceable = None
-                        self.hold = None
-            
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3 and self.stage.state == 0:  # Right-click
-                grid = convertCoordsToGrid(self.mouse_pos)
-                if grid != (-1, -1):  # Valid grid position
-                    if self.hold and self.selectedPlaceable is None:
+                if self.hold is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
+                    if self.chinook != []:
                         new_row, new_col = grid
                         if self.stage.moveTower(self.chinook[0], self.chinook[1], new_row, new_col):
                             print(f"Gato moved to ({new_row}, {new_col})")
+                            self.hold = None  # Release hold after moving
+                            self.chinook = []
                         else:
                             print("Failed to move Gato.")
-                        self.hold = None  # Release hold after moving
-                    else:
-                        # Select a tower if not already holding one
-                        for gato in self.stage.gatos:
-                            if gato.row == grid[0] and gato.col == grid[1]:
-                                # Hold the selected tower
-                                oldGrid = convertCoordsToGrid((gato.x, gato.y))
-                                self.chinook = list(grid)
-                                print(f"Selected Gato at ({oldGrid[0]}, {oldGrid[1]})")
+                    elif self.selectedPlaceable is not None:
+                        if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
+                            self.inventory[self.selectedPlaceable] -= 1
+                        else:
+                            print("Placement rejected")
+                        if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
+                            self.selectedPlaceable = None
+                            self.hold = None
+            
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3 and self.stage.state == 0:  # Right-click
+                grid = convertCoordsToGrid(self.mouse_pos)
+                if grid != (-1, -1) and not self.hold:  # Valid grid position
+                    # Select a tower if not already holding one
+                    for gato in self.stage.gatos:
+                        if gato.row == grid[0] and gato.col == grid[1]:
+                            # Hold the selected tower
+                            oldGrid = convertCoordsToGrid((gato.x, gato.y))
+                            self.chinook = list(grid)
+                            print(f"Selected Gato at ({oldGrid[0]}, {oldGrid[1]})")
 
-                                self.hold = self.holdTower(template_id=gato.template_id,lvl=gato.lvl)
-                                gato.show = False
+                            self.hold = self.holdTower(template_id=gato.template_id,lvl=gato.lvl)
+                            gato.show = False
 
-                                break
+                            break
 
         for gecko in self.stage.geckos:
             if gecko.hp <= 0:
