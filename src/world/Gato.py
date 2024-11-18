@@ -103,11 +103,6 @@ class Gato:
                 self.projectiles.remove(projectile)
 
 
-        # Update projectiles
-        for projectile in self.projectiles:
-            projectile.update(dt)
-            if not projectile.active:
-                self.projectiles.remove(projectile)
 
         if self.exclamationTimer <= 0:
             self.isAttacking = False
@@ -125,6 +120,7 @@ class Gato:
 
                         # Create a projectile targeting the gecko
                         self.projectiles.append(Projectile(self.x, self.y, target, 300, self.damage))
+                        
 
                         # Play sound effect
                         gSounds["hurt"].play()
