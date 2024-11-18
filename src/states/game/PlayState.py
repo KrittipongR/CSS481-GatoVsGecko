@@ -31,7 +31,7 @@ class PlayState(BaseState):
             'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':4
+            'MONEY':100
         }
 
         # Initialize buttons for each item with dynamic text
