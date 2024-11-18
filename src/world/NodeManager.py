@@ -2,6 +2,7 @@ from src.world.Node import Node
 from src.Constants import *
 import random
 from typing import List
+import pygame
 
 class NodeManager:
     
@@ -163,3 +164,27 @@ class NodeManager:
     
     def getNodeByID(self, nodeID:int) -> Node:
         return [node for node in self.nodeList if node.nodeID == nodeID][0]
+    
+    # def renderPath(self, screen: pygame.Surface):
+    #     """ Render the current path for the gecko on the screen. """
+    #     # Path color (Red for the path)
+    #     path_color = (255, 0, 0)  # Red color for the path
+    #     waypoint_color = (0, 255, 0)  # Green color for waypoints
+
+    #     # Loop through the currentPath to draw lines between consecutive nodes
+    #     for i in range(len(self.currentPath) - 1):
+    #         start_node = self.currentPath[i]
+    #         end_node = self.currentPath[i + 1]
+
+    #         # Convert node positions to screen coordinates
+    #         # Start at top-left of the node, adjust for tile center if needed
+    #         start_pos = (start_node.col * TILE_SIZE + TILE_SIZE // 2, start_node.row1 * TILE_SIZE + TILE_SIZE // 2)
+    #         end_pos = (end_node.col * TILE_SIZE + TILE_SIZE // 2, end_node.row1 * TILE_SIZE + TILE_SIZE // 2)
+
+    #         # Draw a line between consecutive nodes in the path
+    #         pygame.draw.line(screen, path_color, start_pos, end_pos, 3)  # Line thickness is 3
+
+    #         # Optionally, draw circles at each waypoint to indicate the nodes
+    #         pygame.draw.circle(screen, waypoint_color, start_pos, 5)  # Small circles for waypoints
+    #         pygame.draw.circle(screen, waypoint_color, end_pos, 5)  # Small circles for waypoints
+
