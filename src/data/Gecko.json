@@ -11,7 +11,8 @@
             
             "colorKey": 1,
             "maxHP": 8,
-            "movement" : 80
+            "movement" : 80,
+            "money" : 1
         },
         {
             "name": "gecko2",
@@ -21,7 +22,8 @@
             
             "colorKey": 1,
             "maxHP": 5,
-            "movement" : 200
+            "movement" : 200,
+            "money": 1
         },
         {
             "name": "gecko3",
@@ -31,7 +33,8 @@
             
             "colorKey": 1,
             "maxHP": 25,
-            "movement" : 40
+            "movement" : 40,
+            "money": 3
         }
     ]
 }
