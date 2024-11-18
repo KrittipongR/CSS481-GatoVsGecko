@@ -179,6 +179,7 @@ class PlayState(BaseState):
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
             gSounds['select'].play()
+            self.hold = "wall"
             self.selectedPlaceable = "BLOCK" if self.selectedPlaceable == None else None
         
         # if self.btn_life.update() and self.inventory["LIFE"] > 0:
@@ -216,6 +217,7 @@ class PlayState(BaseState):
                         print("Placement rejected")
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
+                        self.hold = None
 
         for gecko in self.stage.geckos:
             if gecko.hp == 0:
@@ -258,7 +260,8 @@ class PlayState(BaseState):
         # screen.blit(image, (0,0))
         if self.hold is not None:
             self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL)
-            screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
-
+            screen.blit(self.hold, )
+            if self.hold == "wall":
+                screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
     def Exit(self):
         pass
