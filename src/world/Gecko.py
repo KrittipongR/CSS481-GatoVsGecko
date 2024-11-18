@@ -93,6 +93,7 @@ class Gecko:
             if self.currentDirection != (1 + self.yMod):
                 self.setDirection(1 + self.yMod)  # Magic
 
+
     def update(self, dt, events):
         self.x += self.template["movement"] * dt * self.xMod
         self.y += self.template["movement"] * dt * self.yMod
@@ -121,6 +122,8 @@ class Gecko:
         self.sprite_collection[self.sprite_name].animation.update(dt)
 
     def render(self, screen):
+
+        
         self.sprite = pygame.transform.smoothscale(self.sprite_collection[self.sprite_name].animation.image, (TILE_SIZE, TILE_SIZE))
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))

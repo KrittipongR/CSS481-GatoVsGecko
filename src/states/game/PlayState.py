@@ -65,6 +65,9 @@ class PlayState(BaseState):
         self.wave = 1
         self.stage = Stage()
 
+        self.invalid_pos = False
+        self.invalid_pos_time = 0
+
     def holdTower(self,template_id,lvl):
         #Gato Rendering on button
         names = {
@@ -256,13 +259,20 @@ class PlayState(BaseState):
                             self.chinook = []
                         else:
                             print("Failed to move Gato.")
+<<<<<<< Updated upstream
                             self.hold = None  # Release hold after moving
                             self.chinook = []
+=======
+                            self.invalid_pos = True
+                            self.invalid_pos_time = pygame.time.get_ticks()
+>>>>>>> Stashed changes
                     elif self.selectedPlaceable is not None:
                         if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                             self.inventory[self.selectedPlaceable] -= 1
                         else:
                             print("Placement rejected")
+                            self.invalid_pos = True
+                            self.invalid_pos_time = pygame.time.get_ticks()
                         if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                             self.selectedPlaceable = None
                             self.hold = None
@@ -313,6 +323,8 @@ class PlayState(BaseState):
         self.money_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 2))
         screen.blit(self.money_text, self.money_text_rect.topleft)
 
+        
+
         self.btn_ready.render(screen)
         self.btn_shop.render(screen)
         self.btn_sword.render(screen)
@@ -331,6 +343,15 @@ class PlayState(BaseState):
             else:
                 self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL) # type: ignore
                 screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
+
+        if self.invalid_pos:
+            time_elapsed = pygame.time.get_ticks() - self.invalid_pos_time
+            if time_elapsed < 3000:
+                warning_text = draw_text("You can't place here!", 'medium', (255, 0, 0))
+                warning_rect = warning_text.get_rect(center=(WIDTH // 2, HEIGHT - 70))
+                screen.blit(warning_text, warning_rect)
+            else:
+                self.invalid_pos = False
 
     def Exit(self):
         pass

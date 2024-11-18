@@ -276,3 +276,5 @@ class Stage:
 
         for gato in self.gatos:
             gato.render(screen)
+        
+        # self.nodeManager.renderPath(screen)
