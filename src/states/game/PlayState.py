@@ -101,25 +101,25 @@ class PlayState(BaseState):
 
         if self.btn_sword.hover or self.selectedPlaceable == "SWORD":
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 0))
-            self.hold = self.holdTower(template_id=4,lvl=1)
+            
         else:
             self.btn_sword.image = draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255))
 
         if self.btn_arrow.hover or self.selectedPlaceable == "ARROW":
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 0))
-            self.hold = self.holdTower(template_id=2,lvl=1)
+            
         else:
             self.btn_arrow.image = draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255))
 
         if self.btn_bomb.hover or self.selectedPlaceable == "BOMB":
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 0))
-            self.hold = self.holdTower(template_id=3,lvl=1)
+            
         else:
             self.btn_bomb.image = draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255))
 
         if self.btn_sniper.hover or self.selectedPlaceable == "SNIPER":
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 0))
-            self.hold = self.holdTower(template_id=1,lvl=1)
+            
         else:
             self.btn_sniper.image = draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255))
 
@@ -159,18 +159,22 @@ class PlayState(BaseState):
         
         if self.btn_sword.update() and self.inventory["SWORD"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=4,lvl=1)
             self.selectedPlaceable = "SWORD" if self.selectedPlaceable == None else None
 
         if self.btn_arrow.update() and self.inventory["ARROW"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=2,lvl=1)
             self.selectedPlaceable = "ARROW" if self.selectedPlaceable == None else None
 
         if self.btn_bomb.update() and self.inventory["BOMB"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=3,lvl=1)
             self.selectedPlaceable = "BOMB" if self.selectedPlaceable == None else None
 
         if self.btn_sniper.update() and self.inventory["SNIPER"] > 0:
             gSounds['select'].play()
+            self.hold = self.holdTower(template_id=1,lvl=1)
             self.selectedPlaceable = "SNIPER" if self.selectedPlaceable == None else None
 
         if self.btn_block.update() and self.inventory["BLOCK"] > 0:
