@@ -146,7 +146,7 @@ class Stage:
                     
                     for gato in self.gatos:
                         if gato.row == row and gato.col == col:
-                            print(gato.template_id)
+                            # print(gato.template_id)
                             if templates[type]==gato.template_id:
                                 
                                 if gato.lvl ==1: 
@@ -188,16 +188,35 @@ class Stage:
             # Find the tower at the old position
             for gato in self.gatos:
                 if gato.row == old_row and gato.col == old_col:
+                    for targetGato in self.gatos:
+                        if targetGato.row == new_row and targetGato.col == new_col:
+                            if gato.template_id == targetGato.template_id and gato.lvl == targetGato.lvl:
+                                # LEVEL UP
+                                pass
+                            else:
+                                print("Invalid move: Target position is occupied or invalid.")
+                                gato.show = True
+                                return False
                     # Validate the new position
                     if self.nodeManager.addBlock(new_row, new_col, validateOnly=True):  # Doesn't actually add the block at this step
                         # Update the tower's position
-                        for node in self.nodeManager.getNodesByColumn(old_col):
-                            if node.row1 == old_row + 1:
-                                self.nodeManager.addNode(range(old_row, node.row2 + 1), old_col)
-                                self.nodeManager.removeNode(node)
-                            elif node.row2 == old_row - 1:
-                                self.nodeManager.addNode(range(node.row1, old_row + 1), old_col)
-                                self.nodeManager.removeNode(node)      
+                        # newNodes = []
+                        # for node in self.nodeManager.getNodesByColumn(old_col):
+                        #     print((node.col, node.row1, node.row2))
+                        #     if node.row1 == old_row + 1:            # ABOVE THE TOWER'S ORIGINAL POSITION
+                        #         newNodes.append(range(old_row, node.row2 + 1))
+                        #         self.nodeManager.removeNode(node)
+                        #         print('1')
+                        #     elif node.row2 == old_row - 1:          # BELOW THE TOWER'S ORIGINAL POSITION
+                        #         newNodes.append(range(node.row1, old_row + 1))
+                        #         self.nodeManager.removeNode(node)
+                        #         print('2')      
+
+                        # for node in newNodes:
+                        #     print("ASAFASFSAF")
+                        #     print(node)
+                        #     self.nodeManager.addNode(node, old_col)
+                        # self.nodeManager.verifyColumn(old_col)
 
 
 
@@ -206,9 +225,11 @@ class Stage:
                         #     self.nodeManager.removeNode(node_to_remove)
                         # else:
                         #     raise ValueError(f"No node found at row {old_row}, column {old_col}.")
+                        self.nodeManager.removeBlock((old_row, old_col))
+                        # self.nodeManager.refreshColumn(old_col)
                         gato.moveToGrid((new_row, new_col))
                         gato.show = True
-                        self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
+                        self.nodeManager.addBlock(new_row, new_col, validateOnly=False)  # Occupy the new position
                         Gecko.setPath(self.nodeManager.currentPath[::-1])
                         return True
                     else:

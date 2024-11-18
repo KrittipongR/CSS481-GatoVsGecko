@@ -246,7 +246,7 @@ class PlayState(BaseState):
             if event.type == self.doorway.DOOR_CLOSE_EVENT:
                 self.doorway.close_door()
             
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.stage.state == 0:
                 if self.hold is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                     if self.chinook != []:
                         new_row, new_col = grid
@@ -256,6 +256,8 @@ class PlayState(BaseState):
                             self.chinook = []
                         else:
                             print("Failed to move Gato.")
+                            self.hold = None  # Release hold after moving
+                            self.chinook = []
                     elif self.selectedPlaceable is not None:
                         if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                             self.inventory[self.selectedPlaceable] -= 1

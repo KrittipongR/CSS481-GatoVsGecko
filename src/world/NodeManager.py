@@ -16,21 +16,47 @@ class NodeManager:
             self.addNode(range(1, mapRows-1), i)
         self.doorNode = self.getNodeByID(self.addNode(range(7, 8), self.mapCols - 1))   # Final node at the door (row 7)
         self.nodeConnectionLoop()
+        self.blocks = []
 
     def addNode(self, rowRange:range, col:int) -> int:
-
-        for node in self.getNodesByColumn(col):  # Vertically adjacent
-            if node.row2 == rowRange[0] - 1:     
-                newNode = Node(range(node.row1, rowRange[-1] + 1), col, self.currentNodeID)
-                break
-            elif node.row1 == rowRange[-1] + 1:
-                newNode = Node(range(rowRange[0], node.row2 + 1), col, self.currentNodeID)
-                break
-        else:
-            newNode = Node(rowRange, col, self.currentNodeID)
+        newNode = Node(rowRange, col, self.currentNodeID)
         self.nodeList.append(newNode)
         self.currentNodeID += 1
         return self.currentNodeID - 1
+    
+    # def verifyColumn(self, col:int):   # Vertically adjacent nodes get merged
+    #     nodes = self.getNodesByColumn(col)
+    #     for node1 in nodes:
+    #         for node2 in nodes:
+    #             if node1.row2 == node2.row1 - 1:
+    #                 self.addNode(range(node1.row1, node2.row2 + 1), col)
+
+    def removeBlock(self, grid: tuple[int, int]):
+        print("BLOCKS")
+        print(self.blocks)
+        for block in self.blocks:
+            if block == grid:
+                self.blocks.remove(block)
+                self.refreshColumn(grid[1])
+                break
+
+    def refreshColumn(self, col:int):
+        for node in self.getNodesByColumn(col):
+            print("NODE REMOVED:")
+            print((node.col, node.row1, node.row2))
+            print("---------------")
+            self.removeNode(node)
+
+        blockRows = [block[0] for block in self.blocks if block[1] == col]
+        blockRows = [0] + sorted(blockRows) + [self.mapRows - 1]
+
+        for i in range(len(blockRows) - 1):
+            rowRange = range(blockRows[i] + 1, blockRows[i+1])
+            if rowRange:    # If gap, car
+                
+                self.addNode(rowRange, col)
+
+
 
     def removeNode(self, node:Node):
         self.nodeList.remove(node) 
@@ -114,10 +140,10 @@ class NodeManager:
                 self.removeNode(node)
                 self.removeAllConnections()
                 self.nodeConnectionLoop()
-
-                print("printing ALL nodes")
-                for node2 in self.nodeList:
-                    print((node2.col, node2.row1, node2.row2))
+                if not validateOnly:
+                    print("printing ALL nodes")
+                    for node2 in self.nodeList:
+                        print((node2.col, node2.row1, node2.row2))
 
                 if self.currentPath == [] or validateOnly:
                     if topNode is not None:
@@ -129,6 +155,7 @@ class NodeManager:
                     self.nodeConnectionLoop()
                     return False or validateOnly
         
+        self.blocks.append((row, col))
         return True     # Good enough for now?
 
     def getNodesByColumn(self, col:int) -> list[Node]:
