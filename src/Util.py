@@ -1,6 +1,7 @@
 import pygame
 import json
 from src.Resources import *
+from src.Constants import *
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -85,42 +86,28 @@ class Sprite:
 
 class SpriteManager:
     def __init__(self, path):
-        self.spriteCollection = self.loadSprites(
-            [
-                # "./sprites/Icon.json"
-                path
-            ]
-        )
+        self.spriteCollection = self.loadSprites(path)
 
-    def loadSprites(self, urlList, shrink_scale=1):
+    def loadSprites(self, urlList):
         resDict = {}
         for url in urlList:
             with open(url) as jsonData:
                 data = json.load(jsonData)
                 mySpritesheet = SpriteSheet(data["spriteSheetURL"])
                 dic = {}
-                try:
-                    spriteList = data["sprites"]
-                except KeyError:
-                    spriteList = data["templates"]
+                spriteList = data["sprites"]
+                (xTileSize, yTileSize) = data["size"]
 
                 if data["type"] == "animation":
                     for sprite in spriteList:
                         images = []
                         for image in sprite["images"]:
-                            try:
-                                xSize = sprite['xsize']
-                                ySize = sprite['ysize']
-                            except KeyError:
-                                xSize, ySize = data['size']
                             images.append(
                                 mySpritesheet.image_at(
                                     image["x"],
                                     image["y"],
-                                    image["scale"],
-                                    colorkey=-1, #sprite["colorKey"],
-                                    xTileSize=xSize,
-                                    yTileSize=ySize,
+                                    xTileSize,
+                                    yTileSize
                                 )
                             )
                         try:
@@ -128,10 +115,8 @@ class SpriteManager:
                             idle_img = mySpritesheet.image_at(
                                 idle_info["x"],
                                 idle_info["y"],
-                                idle_info["scale"],
-                                colorkey=-1,
-                                xTileSize=xSize,
-                                yTileSize=ySize
+                                xTileSize,
+                                yTileSize
                             )
                         except KeyError:
                             idle_img = None
@@ -149,23 +134,12 @@ class SpriteManager:
                     continue
                 else:
                     for sprite in spriteList:
-                        try:
-                            colorkey = sprite["colorKey"]
-                        except KeyError:
-                            colorkey = None
-                        try:
-                            xSize = sprite['xsize']
-                            ySize = sprite['ysize']
-                        except KeyError:
-                            xSize, ySize = data['size']
                         dic[sprite["name"]] = Sprite(
                             mySpritesheet.image_at(
                                 sprite["x"],
                                 sprite["y"],
-                                sprite["scalefactor"],#//shrink_scale,
-                                colorkey,
-                                xTileSize=xSize,
-                                yTileSize=ySize,
+                                xTileSize,
+                                yTileSize
                             ),
                         )
                     resDict.update(dic)
@@ -175,25 +149,23 @@ class SpriteManager:
 class SpriteSheet(object):
     def __init__(self, filename):
         try:
-            self.sheet = pygame.image.load(filename)
-            self.sheet = pygame.image.load(filename)
-            if not self.sheet.get_alpha():
-                self.sheet.set_colorkey((0, 0, 0))
+            self.sheet = pygame.image.load(filename).convert_alpha()
+            # if not self.sheet.get_alpha():
+            #     self.sheet.set_colorkey((0, 0, 0))
         except pygame.error:
             print("Unable to load spritesheet image:", filename)
             raise SystemExit
 
-    def image_at(self, x, y, scalingfactor, colorkey=None,
-                 xTileSize=16, yTileSize=16):
-        rect = pygame.Rect((x, y, xTileSize, yTileSize))
+    def image_at(self, x, y, xTileSize=512, yTileSize=512):
+        rect = pygame.Rect(x, y, xTileSize, yTileSize)
         image = pygame.Surface(rect.size)
         image.blit(self.sheet, (0, 0), rect)
-        if colorkey is not None:
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
+        # if colorkey is not None:
+        #     if colorkey == -1:
+        #         colorkey = image.get_at((0, 0))
+        #     image.set_colorkey(colorkey, pygame.RLEACCEL)
         return pygame.transform.scale(
-            image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
+            image, (xTileSize, yTileSize)
         )
     
 class Button():
@@ -250,12 +222,11 @@ class Template:
             with open(self.path, 'r') as f:
                 data = json.load(f)
 
-            sprite_collection = SpriteManager(path=self.path).spriteCollection
-            self.sprite = sprite_collection[self.type + str(template_id)].image
             # Iterating through the json list
             for template in data["templates"]:
                 if self.type + str(template_id) == template["name"]:
                     self.data = template
+                    break
 
         except FileNotFoundError:
             print(f"Error: The file {self.path} was not found.")
@@ -264,3 +235,20 @@ class Template:
         except json.decoder.JSONDecodeError:
             print(f"Error: Failed to decode the template {self.path} file.")
             return None
+
+def convertGridToCoords(grid: tuple[int, int], center=True) -> tuple[int, int]:  # Default: The output coordinates will be at the center of the grid, NOT TOP-LEFT
+    if center:
+        mod = TILE_SIZE / 2
+    else:
+        mod = 0
+    y = grid[0] * TILE_SIZE + mod
+    x = grid[1] * TILE_SIZE + mod
+    return (int(x), int(y))
+
+def convertCoordsToGrid(coords: tuple[int, int]) -> tuple[int, int]:
+    if int(coords[0]) in range(0, MAP_WIDTH * TILE_SIZE) and int(coords[1]) in range(0, MAP_HEIGHT * TILE_SIZE):
+        row = coords[1] // TILE_SIZE
+        col = coords[0] // TILE_SIZE
+        return (row, col)
+    else:
+        return (-1, -1)

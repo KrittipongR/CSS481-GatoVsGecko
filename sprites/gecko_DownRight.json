@@ -1,0 +1,144 @@
+{
+    "spriteSheetURL": "./graphics/gecko_DownRight.png",
+    "type":"animation",
+    "size":[512, 512],
+    "sprites":[
+        {
+            "name":"gecko_walk_down",
+            "images":[
+                {
+                    "x":0,
+                    "y":0,
+                    "scale":1
+                },
+                {
+                    "x":512,
+                    "y":0,
+                    "scale":1
+                },
+                {
+                    "x":1024,
+                    "y":0,
+                    "scale":1
+                },
+			    {
+                    "x":1536,
+                    "y":0,
+                    "scale":1
+                }
+
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":0,
+				"scale":1
+		     },
+            "interval_time":0.2,
+            "colorKey": [255, 255, 255, 255]
+        },
+        {
+            "name":"jinglen_walk_down",
+            "images":[
+                {
+                    "x":0,
+                    "y":512,
+                    "scale":1
+                },
+                {
+                    "x":512,
+                    "y":512,
+                    "scale":1
+                },
+                {
+                    "x":1024,
+                    "y":512,
+                    "scale":1
+                },
+			    {
+                    "x":1536,
+                    "y":512,
+                    "scale":1
+                }
+
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":512,
+				"scale":1
+		     },
+            "interval_time":0.2,
+            "colorKey": [255, 255, 255, 255]
+        },
+        {
+            "name":"gigaGecko_walk_down",
+            "images":[
+                {
+                    "x":0,
+                    "y":1024,
+                    "scale":1
+                },
+                {
+                    "x":512,
+                    "y":1024,
+                    "scale":1
+                },
+                {
+                    "x":1024,
+                    "y":1024,
+                    "scale":1
+                },
+			    {
+                    "x":1536,
+                    "y":1024,
+                    "scale":1
+                }
+
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":1024,
+				"scale":1
+		     },
+            "interval_time":0.2,
+            "colorKey": [255, 255, 255, 255]
+        },
+	   {
+            "name":"chameleon_walk_down",
+            "images":[
+                {
+                    "x":0,
+                    "y":1536,
+                    "scale":1
+                },
+                {
+                    "x":512,
+                    "y":1536,
+                    "scale":1
+                },
+                {
+                    "x":1024,
+                    "y":1536,
+                    "scale":1
+                },
+			    {
+                    "x":1536,
+                    "y":1536,
+                    "scale":1
+                }
+
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":1536,
+				"scale":1
+		     },
+            "interval_time":0.2,
+            "colorKey": [255, 255, 255, 255]
+        }
+]
+}
+
