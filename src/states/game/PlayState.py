@@ -259,9 +259,11 @@ class PlayState(BaseState):
         # image = pygame.image.load("./graphics/gato_DownRight.png")
         # screen.blit(image, (0,0))
         if self.hold is not None:
-            self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL)
-            screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
             if self.hold == "wall":
                 screen.blit(gDoor_image_list[BLOCKADE[0]-1], (self.mouse_x-24,self.mouse_y-24))
+            else:
+                self.hold.set_colorkey(self.hold.get_at((0, 0)),pygame.RLEACCEL)
+                screen.blit(self.hold, (self.mouse_x-24,self.mouse_y-24))
+            
     def Exit(self):
         pass
