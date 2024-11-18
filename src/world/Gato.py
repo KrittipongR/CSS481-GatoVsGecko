@@ -25,7 +25,7 @@ class Gato:
 
 
         self.targets = []
-        self.attackRadius: float = self.template["range"] * 10
+        self.attackRadius: float = self.template["range"] * TILE_SIZE
         try:
             self.targeting: str = self.template["targeting"]
         except KeyError:

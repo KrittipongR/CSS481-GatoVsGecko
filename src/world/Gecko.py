@@ -30,7 +30,8 @@ class Gecko:
                 Gecko.waypoints.append(convertGridToCoords((bestRow, path[currentNode + maxLength - 1].col)))
             currentNode += maxLength - 1
             # previousRow = bestRow
-        # Gecko.waypoints.append(convertGridToCoords((7, 21)))
+        if convertGridToCoords((7, 21)) not in Gecko.waypoints:
+            Gecko.waypoints.insert(-1, convertGridToCoords((7, 21)))
         # Gecko.waypoints.append(convertGridToCoords((7, 22)))
         print(Gecko.waypoints)
 
@@ -111,10 +112,10 @@ class Gecko:
             if self.pathProgress == len(Gecko.waypoints) - 1:   # End of the line
                 # DO SOMETHING HERE TO MAKE THE PLAYER LOSE LIVES
                 self.reached = True
-                self.geckoDoor = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
-
             else:
+                if self.pathProgress == len(Gecko.waypoints) - 2:
+                    self.geckoDoor = True
                 self.updateWaypoint()
 
         self.sprite_collection[self.sprite_name].animation.update(dt)
