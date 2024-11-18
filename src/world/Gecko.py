@@ -50,12 +50,14 @@ class Gecko:
         self.pathProgress = 0   # Index for waypoints
         self.floatingPathProgress: float = 0
         self.hp = self.template.data["maxHP"]
+        self.money = self.template.data["money"]
         self.xMod = 0
         self.yMod = 0
         self.setDirection(3)
         self.currentDirection = 3
         self.updateWaypoint()
         self.reached = False
+        self.geckoDoor = False
         print("gecko generated at: " + str(self.x) + ", " + str(self.y))
 
     def setDirection(self, direction):
@@ -103,6 +105,9 @@ class Gecko:
                 self.reached = True
                 self.hp = 0     # Set own HP to 0 afterwards to get deleted by Stage on the next update cycle
 
+            elif self.pathProgress == len(Gecko.waypoints) - 2:
+                self.geckoDoor = True
+            
             else:
                 self.updateWaypoint()
 
