@@ -98,6 +98,7 @@ class Gato:
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
                         target.hp -= self.damage   
+                        gSounds["hurt"].play()
 
                         font_size = gFonts['small'].size(f'-{self.damage}')                    
                         number = gFonts['small'].render(f'-{self.damage}', False, (255, 255, 255))
