@@ -149,9 +149,20 @@ class Stage:
                             print(gato.template_id)
                             if templates[type]==gato.template_id:
                                 
-                                gato.lvl += 1
-                                print("Upgrade to lvl",gato.lvl)
-                                gato.setDirection(90)
+                                if gato.lvl ==1: 
+                                    gato.lvl += 1
+                                    print("Upgrade to lvl", gato.lvl)
+                                    
+                                    # Recalculate attributes
+                                    gato.damage = gato.template["damage"][gato.lvl - 1]
+                                    gato.attackRadius = gato.template["range"][gato.lvl - 1] * TILE_SIZE
+                                    gato.period = gato.template["period"][gato.lvl - 1]
+                                    
+                                    # Update sprite
+                                    gato.setDirection(gato.direction)
+                                else:
+                                    print("Max tier reached!")
+                                    return False
                                 return True
                             else:
                                 return False
