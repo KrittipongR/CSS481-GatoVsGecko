@@ -49,7 +49,7 @@ class Stage:
         self.state = 0
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
-        Gecko.setPath(self.nodeManager.currentPath)
+        Gecko.setPath(self.nodeManager.currentPath[::-1])
 
     def GenerateWallsAndFloors(self):
         for y in range(1, self.height + 1):
@@ -89,7 +89,7 @@ class Stage:
 
     def placeObject(self, row, col, type):      # Blockade
         if self.state == 0 and self.nodeManager.addBlock(row, col):
-            Gecko.setPath(self.nodeManager.currentPath)
+            Gecko.setPath(self.nodeManager.currentPath[::-1])
             match type:
                 case "BLOCK":
                     self.objects.append(Blockade(row, col))

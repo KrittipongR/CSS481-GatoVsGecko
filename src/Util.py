@@ -227,8 +227,6 @@ class Template:
                 if self.type + str(template_id) == template["name"]:
                     self.data = template
                     break
-            else:
-                self.data = None
 
         except FileNotFoundError:
             print(f"Error: The file {self.path} was not found.")
@@ -238,20 +236,19 @@ class Template:
             print(f"Error: Failed to decode the template {self.path} file.")
             return None
 
-def convertGridToCoords(grid, center=True):  # Default: The output coordinates will be at the center of the grid, NOT TOP-LEFT
+def convertGridToCoords(grid: tuple[int, int], center=True) -> tuple[int, int]:  # Default: The output coordinates will be at the center of the grid, NOT TOP-LEFT
     if center:
         mod = TILE_SIZE / 2
     else:
         mod = 0
     y = grid[0] * TILE_SIZE + mod
     x = grid[1] * TILE_SIZE + mod
-    return (x, y)
+    return (int(x), int(y))
 
-def convertCoordsToGrid(coords):
+def convertCoordsToGrid(coords: tuple[int, int]) -> tuple[int, int]:
     if int(coords[0]) in range(0, MAP_WIDTH * TILE_SIZE) and int(coords[1]) in range(0, MAP_HEIGHT * TILE_SIZE):
         row = coords[1] // TILE_SIZE
         col = coords[0] // TILE_SIZE
-        print((row, col))
         return (row, col)
     else:
-        return None
+        return (-1, -1)

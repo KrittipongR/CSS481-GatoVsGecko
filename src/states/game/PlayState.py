@@ -151,11 +151,11 @@ class PlayState(BaseState):
                     sys.exit()
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('game_over')
-                if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) is not None and grid[1] < MAP_WIDTH - 1:
+                if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                     self.stage.rotateGato(grid)
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None and grid[1] < MAP_WIDTH - 1:
+                if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) != (-1, -1) and grid[1] < MAP_WIDTH - 1:
                     if self.stage.placeObject(grid[0], grid[1], self.selectedPlaceable):
                         self.inventory[self.selectedPlaceable] -= 1
                     else:
@@ -170,7 +170,7 @@ class PlayState(BaseState):
 
         self.lives_text = draw_text(f'LIVES: {self.inventory["LIFE"]}', 'small', (255, 255, 255))
         self.lives_text_rect = self.lives_text.get_rect()
-        self.lives_text_rect.topleft = ((WIDTH - (WIDTH / 10) - 24), (48 * 1))
+        self.lives_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 1))
         screen.blit(self.lives_text, self.lives_text_rect.topleft)
 
         self.btn_ready.render(screen)
