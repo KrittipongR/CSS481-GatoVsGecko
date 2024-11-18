@@ -32,7 +32,7 @@
             "y": 0,
             
             "colorKey": 1,
-            "maxHP": 25,
+            "maxHP": 20,
             "movement" : 40,
             "money": 3
         },{
@@ -42,7 +42,7 @@
             "y": 0,
             
             "colorKey": 1,
-            "maxHP": 25,
+            "maxHP": 50,
             "movement" : 40,
             "money": 3
         }

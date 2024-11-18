@@ -36,11 +36,6 @@ class Gato:
         self.damage: int = self.template["damage"][self.lvl-1]
         self.period: float = self.template["period"][self.lvl-1]
         self.attackTimer: float = 0
-        self.exclamationTimer = 0
-        self.isAttacking = False
-
-        self.exclamation_font_size = gFonts['small'].size("!")                    
-        self.exclamation = gFonts['small'].render("!", False, (255, 255, 255))
 
         self.show = True
 
@@ -103,30 +98,31 @@ class Gato:
                 self.projectiles.remove(projectile)
 
 
-        if self.exclamationTimer <= 0:
-            self.isAttacking = False
-        else:
-            self.isAttacking = True
-        self.exclamationTimer -= dt
+        # Update projectiles
+        for projectile in self.projectiles:
+            projectile.update(dt)
+            if not projectile.active:
+                self.projectiles.remove(projectile)
 
-        # Attacking        
+        # Attacking
         if self.targets:
             if self.attackTimer <= 0:
                 match self.targeting:
                     case "first":
                         self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
                         target = self.targets.pop()
-                        self.projectiles.append(Projectile(self.x, self.y, target.x, target.y, 300, self.damage))
-   
+
+                        # Create a projectile targeting the gecko
+                        self.projectiles.append(Projectile(self.x, self.y, target, 300, self.damage))
+
+                        # Play sound effect
                         gSounds["hurt"].play()
 
-                        font_size = gFonts['small'].size(f'-{self.damage}')                    
+                        # Damage number rendering logic (unchanged)
+                        font_size = gFonts['small'].size(f'-{self.damage}')
                         number = gFonts['small'].render(f'-{self.damage}', False, (255, 255, 255))
                         self.dmgNumbers.append([number, (target.x - font_size[0] / 2, target.y - (TILE_SIZE + font_size[1]) / 2), 0.5])
-                        self.exclamation_coords = (self.x - self.exclamation_font_size[0] / 2, self.y - (TILE_SIZE + self.exclamation_font_size[1] / 2))
                         self.attackTimer = self.period
-                        self.exclamationTimer = 0.1
-                        # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
             else:
                 self.attackTimer -= dt
 
@@ -142,7 +138,4 @@ class Gato:
 
         for dmgNumber in self.dmgNumbers:
             screen.blit(dmgNumber[0], dmgNumber[1])
-        
-        if self.isAttacking:
-            screen.blit(self.exclamation, self.exclamation_coords)
 
