@@ -18,27 +18,28 @@ class PlayState(BaseState):
     def __init__(self):
         # Button initializations
         self.t_ready = 'READY'
-        self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 2))
+        self.btn_ready = Button(draw_text(self.t_ready, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
         self.t_shop = 'SHOP'
-        self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 3))
+        self.btn_shop = Button(draw_text(self.t_shop, 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
         
         # Items available to buy
         self.inventory = {
-            'LIFE': 0,
+            'LIFE': 12,
             'SWORD': 1,
             'ARROW': 1,
             'BOMB': 1,
             'SNIPER': 1,
             'BLOCK': 30,
-            'LOOT BOX': 0
+            'LOOT BOX': 0,
+            'MONEY':4
         }
 
         # Initialize buttons for each item with dynamic text
-        self.btn_sword = Button(draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 4))
-        self.btn_arrow = Button(draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 5))
-        self.btn_bomb = Button(draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 6))
-        self.btn_sniper = Button(draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
-        self.btn_block = Button(draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
+        self.btn_sword = Button(draw_text(f'SWORD ({self.inventory["SWORD"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 7))
+        self.btn_arrow = Button(draw_text(f'ARROW ({self.inventory["ARROW"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 8))
+        self.btn_bomb = Button(draw_text(f'BOMB ({self.inventory["BOMB"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
+        self.btn_sniper = Button(draw_text(f'SNIPER ({self.inventory["SNIPER"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 10))
+        self.btn_block = Button(draw_text(f'BLOCK ({self.inventory["BLOCK"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 11))
         # self.btn_life = Button(draw_text(f'LIFE ({self.inventory["LIFE"]})', 'small', (255, 255, 255)), (WIDTH - (WIDTH / 10) - 24), (48 * 9))
         
         self.selectedPlaceable = None
@@ -104,6 +105,10 @@ class PlayState(BaseState):
             self.btn_setting_toggle.image = draw_text(self.t_setting, 'small', (255, 255, 255))
 
     def update(self, dt, events):
+
+        if self.inventory["LIFE"] <= 0:
+            g_state_machine.Change('game_over')
+
         # Lives display
 
         # Check if each button is clicked by calling `update`
@@ -167,6 +172,11 @@ class PlayState(BaseState):
                     if not self.placementToggle or self.inventory[self.selectedPlaceable] == 0:
                         self.selectedPlaceable = None
 
+        for gecko in self.stage.geckos:
+            if gecko.reached:
+                self.inventory["LIFE"] -= 1
+                self.stage.geckos.remove(gecko)
+        
         self.buttonHover()
         self.stage.update(dt, events)
     
@@ -177,6 +187,11 @@ class PlayState(BaseState):
         self.lives_text_rect = self.lives_text.get_rect()
         self.lives_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 1))
         screen.blit(self.lives_text, self.lives_text_rect.topleft)
+
+        self.money_text = draw_text(f'MONEY: {self.inventory["MONEY"]}', 'small', (255, 255, 255))
+        self.money_text_rect = self.money_text.get_rect()
+        self.money_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 2))
+        screen.blit(self.money_text, self.money_text_rect.topleft)
 
         self.btn_ready.render(screen)
         self.btn_shop.render(screen)
