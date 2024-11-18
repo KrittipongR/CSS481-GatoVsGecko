@@ -48,8 +48,9 @@ class Stage:
         self.adjacent_offset_y = 0
 
         self.state = 0
-        self.timer = 0
-        self.spawn_interval = 1
+        self.timer = 0  # Timer to track time for spawn delay
+        self.spawn_interval = 1  # Delay in seconds (1 second)
+        self.spawn_queue = []  # Queue of entities to spawn with delay
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
         Gecko.setPath(self.nodeManager.currentPath[::-1])
@@ -85,24 +86,22 @@ class Stage:
                 self.tiles[y - 1].append(id)
 
     def GenerateEntities(self, gecko=None, num=1):
-        #self.geckoQueue.append(...)
-        self.state = 1
+        # Add the specified number of entities to the spawn queue
         for _ in range(num):
             if gecko == "Normal":
-                self.geckos.append(Gecko(template_id=1))
+                self.spawn_queue.append(Gecko(template_id=1))
             elif gecko == "Fast":
-                self.geckos.append(Gecko(template_id=2))
+                self.spawn_queue.append(Gecko(template_id=2))
             elif gecko == "Chad":
-                self.geckos.append(Gecko(template_id=3))
+                self.spawn_queue.append(Gecko(template_id=3))
             elif gecko == "Jagras":
-                self.geckos.append(Gecko(template_id=4))
+                self.spawn_queue.append(Gecko(template_id=4))
             else:
-                self.geckos.append(Gecko(template_id=random.randint(1,4)))
+                self.spawn_queue.append(Gecko(template_id=random.randint(1, 4)))
         
 
     def GenerateWaves(self, difficulty=1):
         if difficulty == 1:
-
             self.GenerateEntities(gecko="Normal", num=5)
             self.GenerateEntities(gecko="Chad")
             self.GenerateEntities(gecko="Normal", num=3)
@@ -233,22 +232,26 @@ class Stage:
 
 
     def update(self, dt, events):
+        self.timer += dt  # Increment timer with delta time
 
-        self.timer = self.timer + dt
-        
+        # Check if enough time has passed to spawn the next entity
+        if self.spawn_queue and self.timer >= self.spawn_interval:
+            entity_to_spawn = self.spawn_queue.pop(0)  # Get the next entity from the queue
+            self.geckos.append(entity_to_spawn)  # Add the entity to the geckos list
+            self.timer = 0  # Reset the timer for the next spawn
 
+        # Update existing entities
+        for gecko in self.geckos:
+            gecko.update(dt, events)
+
+        # Handle other updates (doorway checks, entity health, etc.)
         if not self.geckoQueue and not self.geckos:
             self.state = 0
-        else:            
-            for gecko in self.geckos:
-                gecko.update(dt, events)
-
-                for doorway in self.doorways:
-                    gecko_coords = (gecko.x, gecko.y)
-                    
+        for gecko in self.geckos:
+            for doorway in self.doorways:
+                gecko_coords = (gecko.x, gecko.y)
                 if gecko_coords == (1080, 360) and not doorway.open:
                     doorway.open_door()  # Open the door
-
                 if gecko.hp <= 0:
                     self.geckos.remove(gecko)
                     
