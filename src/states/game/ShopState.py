@@ -81,18 +81,15 @@ class ShopState(BaseState):
                     self.player_inventory["MONEY"] -= selected_item["cost"]
                     if selected_item["name"] == "Loot Box":
                         loot_item = random.choice(self.loot_box_pool)
-                        print(f"Congratulations! You won a {loot_item['name']} from the Loot Box!")
                         self.player_inventory[loot_item["name"]] += 1
                         self.last_item_bought = loot_item
                     else:
-                        print(f"Purchased {selected_item['name']} for {selected_item['cost']} coins.")
                         self.player_inventory[selected_item["name"]] += 1
                         self.last_item_bought = selected_item
                     self.item_display_time = pygame.time.get_ticks()
                     self.insufficient_funds = False
                     gSounds['buy'].play()
                 else:
-                    print("Not enough Geckoin to buy this item.")
                     self.insufficient_funds = True
                     self.insufficient_funds_time = pygame.time.get_ticks()
                     self.last_item_bought = None

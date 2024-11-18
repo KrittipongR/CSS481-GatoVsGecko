@@ -24,8 +24,7 @@ class GameMain:
         
 
     def PlayGame(self):
-        # Remind me to put the music back on before finalizing
-        # gSounds['music'].play(-1)
+        gSounds['music'].play(-1)
 
         clock = pygame.time.Clock()
 

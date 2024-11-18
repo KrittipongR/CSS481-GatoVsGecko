@@ -120,7 +120,6 @@ class Stage:
         else:
             for i in range(math.ceil(difficulty)):
                 self.GenerateEntities(num=random.randint(1,difficulty))
-        print(difficulty)
 
 
     def placeObject(self, row, col, type):      # Blockade
@@ -152,12 +151,10 @@ class Stage:
                     
                     for gato in self.gatos:
                         if gato.row == row and gato.col == col:
-                            # print(gato.template_id)
                             if templates[type]==gato.template_id:
                                 
                                 if gato.lvl ==1: 
                                     gato.lvl += 1
-                                    print("Upgrade to lvl", gato.lvl)
                                     merged=True
                                     
                                     # Recalculate attributes
@@ -169,7 +166,6 @@ class Stage:
                                     gato.setDirection(gato.direction)
                                     return True
                                 else:
-                                    print("Max tier reached!")
                                     return False
                                 
                             else:
@@ -202,7 +198,6 @@ class Stage:
                         # Check if the target Gato is of the same type and level, and can be upgraded
                         if gato.template_id == targetGato.template_id and gato.lvl == targetGato.lvl and gato.lvl < 3:
                             targetGato.lvl += 1
-                            print("Upgrade to lvl", targetGato.lvl)
 
                             # Recalculate attributes for the upgraded Gato
                             targetGato.damage = targetGato.template["damage"][targetGato.lvl - 1]
@@ -214,7 +209,6 @@ class Stage:
                             is_upgrade = True
                             
                         else:
-                            print("Invalid move: Target position is occupied or invalid.")
                             gato.show = True
                             return False
 
@@ -230,7 +224,6 @@ class Stage:
                     Gecko.setPath(self.nodeManager.currentPath[::-1])
                     return True
                 else:
-                    print("Invalid move: Target position is occupied or invalid.")
                     gato.show = True  # Ensure show is true if the move is invalid
         
         return False

@@ -53,7 +53,6 @@ class Game: # Game class
 
         if self.player.hp <= 0: # if player dies
             self.running = False
-            print("Game Over")
 
     def draw(self):
 
