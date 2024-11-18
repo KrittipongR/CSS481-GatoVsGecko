@@ -40,7 +40,7 @@ class Gecko:
     
     templates = {}
     
-    for i in range(1, 4):
+    for i in range(1, 5):
         send_help = Template("gecko", i)
         templates[i] = send_help.data
 

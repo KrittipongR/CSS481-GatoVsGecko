@@ -35,6 +35,16 @@
             "maxHP": 25,
             "movement" : 40,
             "money": 3
+        },{
+            "name": "gecko4",
+            "display_name": "Gecko Mk. III",
+            "x": 512,
+            "y": 0,
+            
+            "colorKey": 1,
+            "maxHP": 25,
+            "movement" : 40,
+            "money": 3
         }
     ]
 }
