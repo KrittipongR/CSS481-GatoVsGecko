@@ -49,6 +49,7 @@ class Stage:
 
         self.state = 0
         self.timer = 0
+        self.spawn_interval = 1
 
         self.nodeManager = NodeManager(MAP_HEIGHT, MAP_WIDTH)
         Gecko.setPath(self.nodeManager.currentPath[::-1])
@@ -83,36 +84,40 @@ class Stage:
 
                 self.tiles[y - 1].append(id)
 
-    def GenerateEntities(self, gecko=None):
-        self.state = 1    
-        if gecko == "Normal":
-            self.geckos.append(Gecko(template_id=1))
-        elif gecko == "Fast":
-            self.geckos.append(Gecko(template_id=2))
-        elif gecko == "Chad":
-            self.geckos.append(Gecko(template_id=3))
-        elif gecko == "Jagras":
-            self.geckos.append(Gecko(template_id=4))
-        else:
-            self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
+    def GenerateEntities(self, gecko=None, num=1):
+        #self.geckoQueue.append(...)
+        self.state = 1
+        for _ in range(num):
+            if gecko == "Normal":
+                self.geckos.append(Gecko(template_id=1))
+            elif gecko == "Fast":
+                self.geckos.append(Gecko(template_id=2))
+            elif gecko == "Chad":
+                self.geckos.append(Gecko(template_id=3))
+            elif gecko == "Jagras":
+                self.geckos.append(Gecko(template_id=4))
+            else:
+                self.geckos.append(Gecko(template_id=random.randint(1,4)))
+        
 
     def GenerateWaves(self, difficulty=1):
         if difficulty == 1:
-            self.GenerateEntities(gecko="Normal")
+
+            self.GenerateEntities(gecko="Normal", num=5)
             self.GenerateEntities(gecko="Chad")
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Chad")
         elif difficulty == 2:
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Fast")
-            self.GenerateEntities(gecko="Normal")
+            self.GenerateEntities(gecko="Normal", num=3)
             self.GenerateEntities(gecko="Fast")
-            self.GenerateEntities(gecko="Chad")
+            self.GenerateEntities(gecko="Chad", num=2)
         elif difficulty == 3:
-            self.GenerateEntities(gecko="Jagras")
-            self.GenerateEntities(gecko="Normal")
-            self.GenerateEntities(gecko="Chad")
-            self.GenerateEntities(gecko="Jagras")
+            self.GenerateEntities(gecko="Jagras", num=1)
+            self.GenerateEntities(gecko="Normal", num=3)
+            self.GenerateEntities(gecko="Chad", num=1)
+            self.GenerateEntities(gecko="Jagras", num=2)
         else:
             for i in range(math.ceil(difficulty)):
                 self.GenerateEntities(num=random.randint(1,range(math.ceil(difficulty))))
@@ -209,6 +214,7 @@ class Stage:
     def update(self, dt, events):
 
         self.timer = self.timer + dt
+        
 
         if not self.geckoQueue and not self.geckos:
             self.state = 0
