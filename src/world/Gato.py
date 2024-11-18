@@ -14,6 +14,10 @@ class Gato:
         print("gato placed at grid: " + str(self.row) + ", " + str(self.col))
         self.setDirection(1)
 
+        self.attackRadius = 10
+        # self.attackRadius = self.template.data["attackRadius"]
+        #
+
     names = {
         1: "sniper_cat",
         2: "arrow_cat",

@@ -252,3 +252,6 @@ def convertCoordsToGrid(coords: tuple[int, int]) -> tuple[int, int]:
         return (row, col)
     else:
         return (-1, -1)
+    
+def calculateRadius(origin: tuple[float, float], target: tuple[float, float], radius: float) -> bool:
+    return True
