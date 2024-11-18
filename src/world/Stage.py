@@ -26,7 +26,7 @@ class Stage:
         self.tiles = []
         self.GenerateWallsAndFloors()
 
-        self.geckoQueue = []
+        # self.geckoQueue = []
         self.geckos: list[Gecko] = []
         # self.GenerateEntities()
 
@@ -251,8 +251,10 @@ class Stage:
             gecko.update(dt, events)
 
         # Handle other updates (doorway checks, entity health, etc.)
-        if not self.geckoQueue and not self.geckos:
+        if not self.spawn_queue and not self.geckos:
             self.state = 0
+        else:
+            self.state = 1
         for gecko in self.geckos:
             for doorway in self.doorways:
                 gecko_coords = (gecko.x, gecko.y)
