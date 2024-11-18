@@ -119,7 +119,8 @@ class Stage:
             self.GenerateEntities(gecko="Jagras", num=2)
         else:
             for i in range(math.ceil(difficulty)):
-                self.GenerateEntities(num=random.randint(1,range(math.ceil(difficulty))))
+                self.GenerateEntities(num=random.randint(1,difficulty))
+        print(difficulty)
 
 
     def placeObject(self, row, col, type):      # Blockade
