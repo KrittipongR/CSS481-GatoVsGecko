@@ -32,13 +32,13 @@ class PlayState(BaseState):
         # Items available to buy
         self.inventory = {
             'LIFE': 12,
-            'SWORD': 4,
-            'ARROW': 4,
-            'BOMB': 4,
-            'SNIPER': 4,
+            'SWORD': 1,
+            'ARROW': 1,
+            'BOMB': 1,
+            'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':100
+            'MONEY':10
         }
 
         # For previewing placement (Just a sprite)
@@ -292,11 +292,11 @@ class PlayState(BaseState):
             if gecko.hp <= 0:
                 self.inventory['MONEY']+= gecko.money
             if gecko.reached:
-                self.inventory["LIFE"] -= 1
                 self.stage.geckos.remove(gecko)
             if gecko.geckoDoor and not self.doorway.open:
                 gSounds['door'].play()                
                 self.doorway.open_door()
+                self.inventory["LIFE"] -= 1
 
         if self.stage.geckos == []:
             self.wave = False
