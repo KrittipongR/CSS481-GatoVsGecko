@@ -14,14 +14,7 @@ class StartState(BaseState):
         # Initialize the play button
         self.t_play = 'PLAY'
         self.btn_play = Button(draw_text(self.t_play, 'medium', (255, 255, 0)), (WIDTH / 2 - (len(self.t_play) / 2) * 24), (HEIGHT / 2 + 96))
-
-    def Enter(self, params):
-        pass
-
-    def update(self, dt, events):
-        # Check if the play button is clicked
-        if self.btn_play.update():
-            g_state_machine.Change('play',enter_params={
+        self.inventory = {
             'LIFE': 12,
             'SWORD': 1,
             'ARROW': 1,
@@ -31,7 +24,15 @@ class StartState(BaseState):
             'LOOT BOX': 0,
             'MONEY':100,
             'RESET': True
-        })
+        }
+
+    def Enter(self, params):
+        pass
+
+    def update(self, dt, events):
+        # Check if the play button is clicked
+        if self.btn_play.update():
+            g_state_machine.Change('play',enter_params = self.inventory)
 
         # Process input events
         for event in events:
@@ -43,17 +44,7 @@ class StartState(BaseState):
                     pygame.quit()
                     sys.exit()
                 if event.key == pygame.K_RETURN:
-                    g_state_machine.Change('play',enter_params={
-                        'LIFE': 12,
-                        'SWORD': 1,
-                        'ARROW': 1,
-                        'BOMB': 1,
-                        'SNIPER': 1,
-                        'BLOCK': 30,
-                        'LOOT BOX': 0,
-                        'MONEY':100,
-                        'RESET':True
-                    })
+                    g_state_machine.Change('play',enter_params = self.inventory)
 
     def render(self, screen):
         # Render the title
