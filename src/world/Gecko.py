@@ -97,5 +97,6 @@ class Gecko:
         self.sprite_collection[self.sprite_name].animation.update(dt)
 
     def render(self, screen):
-        self.sprite = pygame.transform.scale(self.sprite_collection[self.sprite_name].animation.image, (TILE_SIZE, TILE_SIZE))
+        self.sprite = pygame.transform.smoothscale(self.sprite_collection[self.sprite_name].animation.image, (TILE_SIZE, TILE_SIZE))
+        self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
         screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))

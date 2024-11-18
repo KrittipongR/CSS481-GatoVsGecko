@@ -36,14 +36,16 @@ class Gato:
         self.sprite_collection = SpriteManager([self.path]).spriteCollection
 
         self.sprite_name = Gato.names[self.template_id] + directionStr + str(self.lvl)
-        self.sprite = pygame.transform.scale(self.sprite_collection[self.sprite_name].image, (TILE_SIZE, TILE_SIZE))
+        self.sprite = pygame.transform.smoothscale(self.sprite_collection[self.sprite_name].image, (TILE_SIZE, TILE_SIZE))
         self.wpn_sprite_name = Gato.names[self.template_id] + directionStr + "weapon"
         wpn_rotation = (direction-1)*90 if direction != 3 else 0
-        self.wpn_sprite = pygame.transform.scale(pygame.transform.rotate(self.sprite_collection[self.wpn_sprite_name].image, wpn_rotation), (TILE_SIZE, TILE_SIZE))
+        self.wpn_sprite = pygame.transform.smoothscale(pygame.transform.rotate(self.sprite_collection[self.wpn_sprite_name].image, wpn_rotation), (TILE_SIZE, TILE_SIZE))
 
     def update(self, dt, events):
         pass
 
     def render(self, screen):       
+        self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)
+        self.wpn_sprite.set_colorkey(self.wpn_sprite.get_at((0, 0)),pygame.RLEACCEL)
         screen.blit(self.sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
         screen.blit(self.wpn_sprite, (self.x - (TILE_SIZE / 2), self.y - (TILE_SIZE / 2)))
