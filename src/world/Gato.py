@@ -12,10 +12,11 @@ class Gato:
         self.col = col
         self.lvl = lvl
         print("gato placed at grid: " + str(self.row) + ", " + str(self.col))
-        self.setDirection(1)
+        self.setDirection(90)
 
-        self.attackRadius = 10
-        # self.attackRadius = self.template.data["attackRadius"]
+
+        self.targets = []
+        self.attackRadius: float = self.template.data["range"]
         #
 
     names = {
@@ -26,26 +27,32 @@ class Gato:
     }
 
     def setDirection(self, direction):
-        direction = direction % 4
-        match direction:
-            case 0 | 1 | 2:
-                directionStr = "_left_"
-                self.path = "./sprites/gato_UpLeft.json"
-            case 3:
-                directionStr = "_right_"
-                self.path = "./sprites/gato_DownRight.json"
-
-        self.currentDirection = direction
-
-        self.sprite_collection = SpriteManager([self.path]).spriteCollection
-
-        self.sprite_name = Gato.names[self.template_id] + directionStr + str(self.lvl)
+        direction = direction % 360
+        path = "./sprites/gato_UpLeft.json"
+        self.sprite_collection = SpriteManager([path]).spriteCollection
+        self.sprite_name = Gato.names[self.template_id] + "_left_" + str(self.lvl)
         self.sprite = pygame.transform.smoothscale(self.sprite_collection[self.sprite_name].image, (TILE_SIZE, TILE_SIZE))
-        self.wpn_sprite_name = Gato.names[self.template_id] + directionStr + "weapon"
-        wpn_rotation = (direction-1)*90 if direction != 3 else 0
-        self.wpn_sprite = pygame.transform.smoothscale(pygame.transform.rotate(self.sprite_collection[self.wpn_sprite_name].image, wpn_rotation), (TILE_SIZE, TILE_SIZE))
+        self.wpn_sprite_name = Gato.names[self.template_id] + "_left_weapon"
+        self.wpn_sprite = self.sprite_collection[self.wpn_sprite_name].image
+        if 0 <= direction < 180:            
+            wpn_rotation = direction - 90
+            self.wpn_sprite = pygame.transform.rotate(self.wpn_sprite, wpn_rotation)
+        else:
+            wpn_rotation = direction - 270
+            self.sprite = pygame.transform.flip(self.sprite, True, False)
+            self.wpn_sprite = pygame.transform.flip(self.wpn_sprite, True, False)
+
+        self.wpn_sprite = pygame.transform.smoothscale(self.wpn_sprite, (TILE_SIZE, TILE_SIZE))
+        
+
+    def clearTargets(self):
+        self.targets = []
+
+    def addTarget(self, gecko):
+        self.targets.append(gecko)
 
     def update(self, dt, events):
+
         pass
 
     def render(self, screen):       

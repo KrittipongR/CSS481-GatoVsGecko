@@ -187,7 +187,10 @@ class PlayState(BaseState):
                         self.selectedPlaceable = None
 
         for gecko in self.stage.geckos:
+            if gecko.hp == 0:
+                self.inventory['money']+= gecko.money
             if gecko.reached:
+                gSounds['game_over'].play()
                 self.inventory["LIFE"] -= 1
                 self.stage.geckos.remove(gecko)
         

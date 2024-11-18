@@ -2,6 +2,7 @@ import pygame
 import json
 from src.Resources import *
 from src.Constants import *
+import math
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -254,4 +255,7 @@ def convertCoordsToGrid(coords: tuple[int, int]) -> tuple[int, int]:
         return (-1, -1)
     
 def calculateRadius(origin: tuple[float, float], target: tuple[float, float], radius: float) -> bool:
-    return True
+    x1, y1 = origin
+    x2, y2 = target
+    distance = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+    return distance <= radius
