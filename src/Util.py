@@ -86,42 +86,28 @@ class Sprite:
 
 class SpriteManager:
     def __init__(self, path):
-        self.spriteCollection = self.loadSprites(
-            [
-                # "./sprites/Icon.json"
-                path
-            ]
-        )
+        self.spriteCollection = self.loadSprites(path)
 
-    def loadSprites(self, urlList, shrink_scale=1):
+    def loadSprites(self, urlList):
         resDict = {}
         for url in urlList:
             with open(url) as jsonData:
                 data = json.load(jsonData)
                 mySpritesheet = SpriteSheet(data["spriteSheetURL"])
                 dic = {}
-                try:
-                    spriteList = data["sprites"]
-                except KeyError:
-                    spriteList = data["templates"]
+                spriteList = data["sprites"]
+                (xTileSize, yTileSize) = data["size"]
 
                 if data["type"] == "animation":
                     for sprite in spriteList:
                         images = []
                         for image in sprite["images"]:
-                            try:
-                                xSize = sprite['xsize']
-                                ySize = sprite['ysize']
-                            except KeyError:
-                                xSize, ySize = data['size']
                             images.append(
                                 mySpritesheet.image_at(
                                     image["x"],
                                     image["y"],
-                                    image["scale"],
-                                    colorkey=sprite["colorKey"],
-                                    xTileSize=xSize,
-                                    yTileSize=ySize,
+                                    xTileSize,
+                                    yTileSize
                                 )
                             )
                         try:
@@ -129,10 +115,8 @@ class SpriteManager:
                             idle_img = mySpritesheet.image_at(
                                 idle_info["x"],
                                 idle_info["y"],
-                                idle_info["scale"],
-                                colorkey=sprite["colorkey"],
-                                xTileSize=xSize,
-                                yTileSize=ySize
+                                xTileSize,
+                                yTileSize
                             )
                         except KeyError:
                             idle_img = None
@@ -150,23 +134,12 @@ class SpriteManager:
                     continue
                 else:
                     for sprite in spriteList:
-                        try:
-                            colorkey = sprite["colorKey"]
-                        except KeyError:
-                            colorkey = None
-                        try:
-                            xSize = sprite['xsize']
-                            ySize = sprite['ysize']
-                        except KeyError:
-                            xSize, ySize = data['size']
                         dic[sprite["name"]] = Sprite(
                             mySpritesheet.image_at(
                                 sprite["x"],
                                 sprite["y"],
-                                sprite["scalefactor"],#//shrink_scale,
-                                colorkey,
-                                xTileSize=xSize,
-                                yTileSize=ySize,
+                                xTileSize,
+                                yTileSize
                             ),
                         )
                     resDict.update(dic)
@@ -176,25 +149,23 @@ class SpriteManager:
 class SpriteSheet(object):
     def __init__(self, filename):
         try:
-            self.sheet = pygame.image.load(filename)
-            self.sheet = pygame.image.load(filename)
-            if not self.sheet.get_alpha():
-                self.sheet.set_colorkey((0, 0, 0))
+            self.sheet = pygame.image.load(filename).convert_alpha()
+            # if not self.sheet.get_alpha():
+            #     self.sheet.set_colorkey((0, 0, 0))
         except pygame.error:
             print("Unable to load spritesheet image:", filename)
             raise SystemExit
 
-    def image_at(self, x, y, scalingfactor, colorkey=None,
-                 xTileSize=16, yTileSize=16):
-        rect = pygame.Rect((x, y, xTileSize, yTileSize))
+    def image_at(self, x, y, xTileSize=512, yTileSize=512):
+        rect = pygame.Rect(x, y, xTileSize, yTileSize)
         image = pygame.Surface(rect.size)
         image.blit(self.sheet, (0, 0), rect)
-        if colorkey is not None:
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
+        # if colorkey is not None:
+        #     if colorkey == -1:
+        #         colorkey = image.get_at((0, 0))
+        #     image.set_colorkey(colorkey, pygame.RLEACCEL)
         return pygame.transform.scale(
-            image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
+            image, (xTileSize, yTileSize)
         )
     
 class Button():

@@ -93,6 +93,14 @@ class Stage:
             match type:
                 case "BLOCK":
                     self.objects.append(Blockade(row, col))
+                case "SNIPER" | "ARROW" | "BOMB" | "SWORD":
+                    templates = {
+                        "SNIPER": 1,
+                        "ARROW": 2,
+                        "BOMB": 3,
+                        "SWORD": 4                        
+                    }
+                    self.gatos.append(Gato(row,col, template_id=templates[type]))
                 case _:
                     return False
 
@@ -100,9 +108,14 @@ class Stage:
         else:
             return False
         
-    def placeGatos(self, row, col, type):       # Towers
-        if self.state == 0 and self.nodeManager.addBlock(row, col):
-            self.gatos.append(Gato(row, col))
+    # def placeGatos(self, row, col, type):       # Towers
+    #     if self.state == 0 and self.nodeManager.addBlock(row, col):
+    #         self.gatos.append(Gato(row, col))
+    def rotateGato(self, grid):
+        for gato in self.gatos:
+            if (gato.row, gato.col) == grid and self.state == 0:
+                gato.setDirection(gato.currentDirection + 1)
+                break
 
     def update(self, dt, events):
         if not self.geckoQueue and not self.geckos:
@@ -142,4 +155,7 @@ class Stage:
             object.render(screen)
 
         for entity in self.geckos:
+            entity.render(screen)
+
+        for entity in self.gatos:
             entity.render(screen)

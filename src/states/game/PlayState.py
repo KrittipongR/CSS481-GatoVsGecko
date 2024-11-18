@@ -24,12 +24,12 @@ class PlayState(BaseState):
         
         # Items available to buy
         self.inventory = {
-            'SWORD': 0,
-            'ARROW': 0,
-            'BOMB': 0,
-            'SNIPER': 0,
-            'BLOCK': 10,
             'LIFE': 0,
+            'SWORD': 1,
+            'ARROW': 1,
+            'BOMB': 1,
+            'SNIPER': 1,
+            'BLOCK': 10,
             'LOOT BOX': 0
         }
 
@@ -151,6 +151,8 @@ class PlayState(BaseState):
                     sys.exit()
                 if event.key == pygame.K_RETURN:
                     g_state_machine.Change('game_over')
+                if event.key == pygame.K_r and (grid := convertCoordsToGrid(pygame.mouse.get_pos())) is not None and grid[1] < MAP_WIDTH - 1:
+                    self.stage.rotateGato(grid)
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if self.selectedPlaceable is not None and (grid := convertCoordsToGrid(event.pos)) is not None and grid[1] < MAP_WIDTH - 1:
@@ -158,7 +160,7 @@ class PlayState(BaseState):
                         self.inventory[self.selectedPlaceable] -= 1
                     else:
                         print("Placement rejected")
-                    self.selectedPlaceable = False
+                    self.selectedPlaceable = None
 
         self.buttonHover()
         self.stage.update(dt, events)
@@ -179,6 +181,10 @@ class PlayState(BaseState):
         self.btn_sniper.render(screen)
         self.btn_block.render(screen)
         self.btn_setting.render(screen)
+
+        # Sanity Check
+        # image = pygame.image.load("./graphics/gato_DownRight.png")
+        # screen.blit(image, (0,0))
 
     def Exit(self):
         pass

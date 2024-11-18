@@ -60,7 +60,7 @@ class Gecko:
             self.path = "./sprites/gecko_DownRight.json"
             self.sprite_name = Gecko.names[self.template_id] + "_walk_down"
         self.currentDirection = direction
-        self.sprite_collection = SpriteManager(path=self.path).spriteCollection
+        self.sprite_collection = SpriteManager([self.path]).spriteCollection
         
     def updateWaypoint(self):
         self.waypoint = Gecko.waypoints[self.pathProgress + 1]
