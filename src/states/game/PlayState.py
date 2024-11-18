@@ -188,6 +188,7 @@ class PlayState(BaseState):
 
         for gecko in self.stage.geckos:
             if gecko.reached:
+                gSounds['game_over'].play()
                 self.inventory["LIFE"] -= 1
                 self.stage.geckos.remove(gecko)
         
