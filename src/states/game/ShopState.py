@@ -34,7 +34,7 @@ class ShopState(BaseState):
         ]
         
         self.item_buttons = [
-            Button(draw_text(f"{item['name']} - {item['cost']} coins", 'small', (255, 255, 255)), 200, 250 + i * 50)
+            Button(draw_text(f"{item['name']} - {item['cost']} Geckoins", 'small', (255, 255, 255)), 200, 250 + i * 50)
             for i, item in enumerate(self.items)
         ]
         self.back_button = Button(draw_text("BACK", 'small', (255, 255, 255)), WIDTH - 80, HEIGHT - 50)
@@ -92,7 +92,7 @@ class ShopState(BaseState):
                     self.insufficient_funds = False
                     gSounds['buy'].play()
                 else:
-                    print("Not enough money to buy this item.")
+                    print("Not enough Geckoin to buy this item.")
                     self.insufficient_funds = True
                     self.insufficient_funds_time = pygame.time.get_ticks()
                     self.last_item_bought = None
@@ -115,7 +115,7 @@ class ShopState(BaseState):
         screen.blit(self.bg_image, (0, 0))
 
         # Display player's current money
-        money_text = draw_text(f"Money: {self.player_inventory['MONEY']} coin(s)", 'small', (255, 255, 0))
+        money_text = draw_text(f"Geckoin: {self.player_inventory['MONEY']} Geckoin(s)", 'small', (255, 255, 0))
         screen.blit(money_text, (20, 20))
 
         life_text = draw_text(f"Lives: {self.player_inventory['LIFE']}", 'small', (255, 255, 0))
@@ -123,9 +123,9 @@ class ShopState(BaseState):
 
         for i, button in enumerate(self.item_buttons):
             if button.hover:
-                button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 0))
+                button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} Geckoin", 'small', (255, 255, 0))
             else:
-                button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 255))
+                button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} Geckoin", 'small', (255, 255, 255))
             button.render(screen)
 
         if self.back_button.hover:

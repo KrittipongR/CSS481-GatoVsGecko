@@ -290,7 +290,7 @@ class PlayState(BaseState):
         self.lives_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 1))
         screen.blit(self.lives_text, self.lives_text_rect.topleft)
 
-        self.money_text = draw_text(f'MONEY: {self.inventory["MONEY"]}', 'small', (255, 255, 255))
+        self.money_text = draw_text(f'Geckoin: {self.inventory["MONEY"]}', 'small', (255, 255, 255))
         self.money_text_rect = self.money_text.get_rect()
         self.money_text_rect.topleft = (int(WIDTH - (WIDTH / 10) - 24), (48 * 2))
         screen.blit(self.money_text, self.money_text_rect.topleft)

@@ -6,6 +6,7 @@ from src.Dependencies import *
 from src.Constants import *
 from src.Resources import *
 
+
 class GameMain:
     def __init__(self):
         self.max_frame_rate = 60
