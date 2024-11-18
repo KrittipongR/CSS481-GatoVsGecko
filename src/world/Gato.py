@@ -4,9 +4,17 @@ from src.Util import SpriteManager, Template, convertGridToCoords, convertCoords
 from src.Constants import *
 
 class Gato:
+
+    templates = {}
+    
+    for i in range(1, 5):
+        send_help = Template("gato", i)
+        templates[i] = send_help.data
+
+
     def __init__(self, row, col, template_id=1, lvl=1):
         self.template_id = template_id
-        self.template = Template("gato", self.template_id)
+        self.template = Gato.templates[template_id]
         (self.x, self.y) = convertGridToCoords((row, col))
         self.row = row
         self.col = col
@@ -17,12 +25,14 @@ class Gato:
 
 
         self.targets = []
-        self.attackRadius: float = self.template.data["range"] * 10
+        self.attackRadius: float = self.template["range"] * 10
         try:
-            self.targeting: str = self.template.data["targeting"]
+            self.targeting: str = self.template["targeting"]
         except KeyError:
             self.targeting: str = "first"
-        #
+        self.damage: int = self.template["damage"]
+        self.period: float = self.template["period"]
+        self.attackTimer: float = 0
 
     names = {
         1: "sniper_cat",
@@ -59,13 +69,20 @@ class Gato:
 
     def update(self, dt, events):
         # Attacking
+        
         if self.targets:
-            match self.targeting:
-                case "first":
-                    self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
-                    target = self.targets.pop()
-                    # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
-            pass
+            if self.attackTimer <= 0:
+                match self.targeting:
+                    case "first":
+                        self.targets = sorted(self.targets, key=lambda x: x.floatingPathProgress)
+                        target = self.targets.pop()
+                        target.hp -= self.damage
+                        print("ATTACK")
+                        print(target.hp)
+                        self.attackTimer = self.period
+                        # self.setDirection(calculateAngle((self.x, self.y), (target.x, target.y)))
+            else:
+                self.attackTimer -= dt
 
     def render(self, screen):       
         self.sprite.set_colorkey(self.sprite.get_at((0, 0)),pygame.RLEACCEL)

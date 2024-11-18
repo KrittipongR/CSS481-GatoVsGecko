@@ -192,7 +192,7 @@ class PlayState(BaseState):
                         self.selectedPlaceable = None
 
         for gecko in self.stage.geckos:
-            if gecko.hp == 0:
+            if gecko.hp <= 0:
                 self.inventory['MONEY']+= gecko.money
             if gecko.reached:
                 self.inventory["LIFE"] -= 1
