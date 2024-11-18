@@ -133,6 +133,14 @@ class Stage:
                     
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
+        
+        for gato in self.gatos:
+            gato.clearTargets()
+            for gecko in self.geckos:
+                if calculateRadius((gato.x, gato.y), (gecko.x, gecko.y), gato.attackRadius):                    
+                    gato.addTarget(gecko)
+
+            gato.update(dt, events)
 
     def render(self, screen, x_mod, y_mod):
         for row in range(self.height):
@@ -157,7 +165,4 @@ class Stage:
             entity.render(screen)
 
         for gato in self.gatos:
-            for gecko in self.geckos:
-                if calculateRadius((gato.x, gato.y), (gecko.x, gecko.y), gato.attackRadius):
-                    pass
             gato.render(screen)
