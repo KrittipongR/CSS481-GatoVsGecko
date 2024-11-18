@@ -151,13 +151,25 @@ class Stage:
                     
                     for gato in self.gatos:
                         if gato.row == row and gato.col == col:
-                            print(gato.template_id)
+                            # print(gato.template_id)
                             if templates[type]==gato.template_id:
                                 
-                                gato.lvl += 1
-                                print("Upgrade to lvl",gato.lvl)
-                                gato.setDirection(90)
-                                return True
+                                if gato.lvl ==1: 
+                                    gato.lvl += 1
+                                    print("Upgrade to lvl", gato.lvl)
+                                    
+                                    # Recalculate attributes
+                                    gato.damage = gato.template["damage"][gato.lvl - 1]
+                                    gato.attackRadius = gato.template["range"][gato.lvl - 1] * TILE_SIZE
+                                    gato.period = gato.template["period"][gato.lvl - 1]
+                                    
+                                    # Update sprite
+                                    gato.setDirection(gato.direction)
+                                    return True
+                                else:
+                                    print("Max tier reached!")
+                                    return False
+                                
                             else:
                                 return False
                         
@@ -180,29 +192,38 @@ class Stage:
 
     def moveTower(self, old_row, old_col, new_row, new_col):
             # Find the tower at the old position
+            is_upgrade = False
             for gato in self.gatos:
                 if gato.row == old_row and gato.col == old_col:
+                    for targetGato in self.gatos:
+                        if targetGato.row == new_row and targetGato.col == new_col:
+                            if gato.template_id == targetGato.template_id and gato.lvl == targetGato.lvl and gato.lvl < 3:
+                                targetGato.lvl += 1
+                                print("Upgrade to lvl", targetGato.lvl)
+                                    
+                                # Recalculate attributes
+                                targetGato.damage = targetGato.template["damage"][targetGato.lvl - 1]
+                                targetGato.attackRadius = targetGato.template["range"][targetGato.lvl - 1] * TILE_SIZE
+                                targetGato.period = targetGato.template["period"][targetGato.lvl - 1]
+                                    
+                                # Update sprite
+                                targetGato.setDirection(targetGato.direction)
+                                is_upgrade = True
+                                                               
+                            else:
+                                print("Invalid move: Target position is occupied or invalid.")
+                                gato.show = True
+                                return False
                     # Validate the new position
                     if self.nodeManager.addBlock(new_row, new_col, validateOnly=True):  # Doesn't actually add the block at this step
-                        # Update the tower's position
-                        for node in self.nodeManager.getNodesByColumn(old_col):
-                            if node.row1 == old_row + 1:
-                                self.nodeManager.addNode(range(old_row, node.row2 + 1), old_col)
-                                self.nodeManager.removeNode(node)
-                            elif node.row2 == old_row - 1:
-                                self.nodeManager.addNode(range(node.row1, old_row + 1), old_col)
-                                self.nodeManager.removeNode(node)      
-
-
-
-                        # node_to_remove = next((node for node in self.nodeManager.nodeList if node.col == old_col and old_row in range(node.row1, node.row2 + 1)),None)
-                        # if node_to_remove:
-                        #     self.nodeManager.removeNode(node_to_remove)
-                        # else:
-                        #     raise ValueError(f"No node found at row {old_row}, column {old_col}.")
-                        gato.moveToGrid((new_row, new_col))
-                        gato.show = True
-                        self.nodeManager.addBlock(new_row, new_col)  # Occupy the new position
+                        self.nodeManager.removeBlock((old_row, old_col))
+                        # self.nodeManager.refreshColumn(old_col)
+                        if not is_upgrade:
+                            gato.moveToGrid((new_row, new_col))
+                            gato.show = True                        
+                            self.nodeManager.addBlock(new_row, new_col, validateOnly=False)  # Occupy the new position
+                        else:
+                            self.gatos.remove(gato)
                         Gecko.setPath(self.nodeManager.currentPath[::-1])
                         return True
                     else:
@@ -266,3 +287,5 @@ class Stage:
 
         for gato in self.gatos:
             gato.render(screen)
+        
+        # self.nodeManager.renderPath(screen)

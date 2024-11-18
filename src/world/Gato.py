@@ -26,13 +26,13 @@ class Gato:
 
         self.dmgNumbers = []
         self.targets = []
-        self.attackRadius: float = self.template["range"] * TILE_SIZE
+        self.attackRadius: float = self.template["range"][self.lvl-1] * TILE_SIZE
         try:
             self.targeting: str = self.template["targeting"]
         except KeyError:
             self.targeting: str = "first"
-        self.damage: int = self.template["damage"]
-        self.period: float = self.template["period"]
+        self.damage: int = self.template["damage"][self.lvl-1]
+        self.period: float = self.template["period"][self.lvl-1]
         self.attackTimer: float = 0
 
         self.show = True
