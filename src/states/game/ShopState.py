@@ -118,6 +118,11 @@ class ShopState(BaseState):
                 button.image = draw_text(f"{self.items[i]['name']} - {self.items[i]['cost']} coins", 'small', (255, 255, 255))
             button.render(screen)
 
+        if self.back_button.hover:
+            self.back_button.image = draw_text("BACK", 'small', (255, 255, 0))
+        else:
+            self.back_button.image = draw_text("BACK", 'small', (255, 255, 255))
+
         self.back_button.render(screen)
 
         if self.last_item_bought:
