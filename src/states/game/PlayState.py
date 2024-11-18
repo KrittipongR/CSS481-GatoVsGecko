@@ -34,7 +34,7 @@ class PlayState(BaseState):
             'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':4
+            'MONEY':100
         }
 
         # Initialize buttons for each item with dynamic text
@@ -193,6 +193,8 @@ class PlayState(BaseState):
                         self.selectedPlaceable = None
 
         for gecko in self.stage.geckos:
+            if gecko.hp == 0:
+                self.inventory['MONEY']+= gecko.money
             if gecko.reached:
                 gSounds['door'].play()
                 self.doorway.open_door()

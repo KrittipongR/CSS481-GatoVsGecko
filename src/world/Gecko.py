@@ -48,6 +48,7 @@ class Gecko:
         self.x, self.y = Gecko.waypoints[0]
         self.pathProgress = 0   # Index for waypoints
         self.hp = self.template.data["maxHP"]
+        self.money = self.template.data["money"]
         self.xMod = 0
         self.yMod = 0
         self.setDirection(3)

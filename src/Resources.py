@@ -29,5 +29,9 @@ gSounds = {
     'music': pygame.mixer.Sound('sounds/dawn-of-war-DSTechnician.mp3'),
     'select': pygame.mixer.Sound('sounds/select.wav'),
     'game_over': pygame.mixer.Sound('sounds/game over.wav'),
-    'door': pygame.mixer.Sound('sounds/door.wav')
+    'door': pygame.mixer.Sound('sounds/door.wav'),
+    'hurt': pygame.mixer.Sound('sounds/hurt.wav'),
+    'dead': pygame.mixer.Sound('sounds/dead.wav'),
+    'broke': pygame.mixer.Sound('sounds/broke.wav'),
+    'buy': pygame.mixer.Sound('sounds/buy.wav'),
 }

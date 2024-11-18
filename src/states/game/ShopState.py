@@ -1,5 +1,5 @@
 import pygame, sys
-import random  # Import random for selecting a loot item
+import random
 from src.Dependencies import *
 from src.Resources import *
 from src.Constants import *
@@ -13,7 +13,6 @@ def draw_text(text, font, text_col):
 
 class ShopState(BaseState):
     def __init__(self):
-        # Define the items in the shop (Including Loot Box)
         self.items = [
             {"name": "SWORD", "cost": 15},
             {"name": "ARROW", "cost": 15},
@@ -27,7 +26,6 @@ class ShopState(BaseState):
         raw_bg_image = pygame.image.load('graphics/shop.png')
         self.bg_image = pygame.transform.scale(raw_bg_image, (WIDTH, HEIGHT))
         
-        # Define the pool of items that can be awarded from the Loot Box
         self.loot_box_pool = [
             {"name": "SWORD", "cost": 100},
             {"name": "ARROW", "cost": 50},
@@ -41,14 +39,13 @@ class ShopState(BaseState):
         ]
         self.back_button = Button(draw_text("BACK", 'small', (255, 255, 255)), WIDTH - 80, HEIGHT - 50)
 
-        # Player's inventory reference
-        self.player_inventory = None  # Will be set in Enter
-
+        self.player_inventory = None
         self.last_item_bought = None
         self.item_display_time = 0
+        self.insufficient_funds = False
+        self.insufficient_funds_time = 0
 
     def Enter(self, params):
-        # Assign player's inventory passed from PlayState
         self.player_inventory = params.get('inventory')
 
     def update(self, dt, events):
@@ -80,19 +77,26 @@ class ShopState(BaseState):
 
             if button.update():
                 selected_item = self.items[i]
-                if selected_item["name"] == "Loot Box":
-                    loot_item = random.choice(self.loot_box_pool)
-                    print(f"Congratulations! You won a {loot_item['name']} from the Loot Box!")
-                    self.player_inventory[loot_item["name"]] += 1  # Update inventory
-                    self.last_item_bought = loot_item
+                if self.player_inventory["MONEY"] >= selected_item["cost"]:
+                    self.player_inventory["MONEY"] -= selected_item["cost"]
+                    if selected_item["name"] == "Loot Box":
+                        loot_item = random.choice(self.loot_box_pool)
+                        print(f"Congratulations! You won a {loot_item['name']} from the Loot Box!")
+                        self.player_inventory[loot_item["name"]] += 1
+                        self.last_item_bought = loot_item
+                    else:
+                        print(f"Purchased {selected_item['name']} for {selected_item['cost']} coins.")
+                        self.player_inventory[selected_item["name"]] += 1
+                        self.last_item_bought = selected_item
                     self.item_display_time = pygame.time.get_ticks()
-                    gSounds['select'].play()
+                    self.insufficient_funds = False
+                    gSounds['buy'].play()
                 else:
-                    print(f"Attempting to purchase {selected_item['name']} for {selected_item['cost']} coins.")
-                    self.player_inventory[selected_item["name"]] += 1  # Update inventory
-                    self.last_item_bought = selected_item
-                    self.item_display_time = pygame.time.get_ticks()
-                    gSounds['select'].play()
+                    print("Not enough money to buy this item.")
+                    self.insufficient_funds = True
+                    self.insufficient_funds_time = pygame.time.get_ticks()
+                    self.last_item_bought = None
+                    gSounds['broke'].play()
 
         if self.back_button.update():
             g_state_machine.Change('play', {
@@ -108,8 +112,14 @@ class ShopState(BaseState):
                     })
 
     def render(self, screen):
-
         screen.blit(self.bg_image, (0, 0))
+
+        # Display player's current money
+        money_text = draw_text(f"Money: {self.player_inventory['MONEY']} coin(s)", 'small', (255, 255, 0))
+        screen.blit(money_text, (20, 20))
+
+        life_text = draw_text(f"Lives: {self.player_inventory['LIFE']}", 'small', (255, 255, 0))
+        screen.blit(life_text, (20, 40))
 
         for i, button in enumerate(self.item_buttons):
             if button.hover:
@@ -122,10 +132,18 @@ class ShopState(BaseState):
             self.back_button.image = draw_text("BACK", 'small', (255, 255, 0))
         else:
             self.back_button.image = draw_text("BACK", 'small', (255, 255, 255))
-
         self.back_button.render(screen)
 
-        if self.last_item_bought:
+        # Display feedback (either bought item or error message)
+        if self.insufficient_funds:
+            time_elapsed = pygame.time.get_ticks() - self.insufficient_funds_time
+            if time_elapsed < 3000:
+                warning_text = draw_text("Not Enough Geckoin", 'medium', (255, 0, 0))
+                warning_rect = warning_text.get_rect(center=(WIDTH // 2, HEIGHT - 50))
+                screen.blit(warning_text, warning_rect)
+            else:
+                self.insufficient_funds = False
+        elif self.last_item_bought:
             time_elapsed = pygame.time.get_ticks() - self.item_display_time
             if time_elapsed < 3000:
                 item_text = draw_text(f"You got: {self.last_item_bought['name']}", 'medium', (255, 255, 0))
