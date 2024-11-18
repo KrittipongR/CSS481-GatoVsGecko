@@ -130,9 +130,7 @@ class Stage:
                     
                 if gecko_coords == (1080, 360) and not doorway.open:
                     doorway.open_door()  # Open the door
-
-                if gecko.hp <= 0:
-                    self.geckos.remove(gecko)
+                    
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
             return
 

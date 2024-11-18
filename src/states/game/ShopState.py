@@ -15,13 +15,13 @@ class ShopState(BaseState):
     def __init__(self):
         # Define the items in the shop (Including Loot Box)
         self.items = [
-            {"name": "SWORD", "cost": 100},
-            {"name": "ARROW", "cost": 50},
-            {"name": "BOMB", "cost": 75},
-            {"name": "SNIPER", "cost": 150},
-            {"name": "BLOCK", "cost": 120},
-            {"name": "LIFE", "cost": 50},
-            {"name": "Loot Box", "cost": 200}
+            {"name": "SWORD", "cost": 15},
+            {"name": "ARROW", "cost": 15},
+            {"name": "BOMB", "cost": 15},
+            {"name": "SNIPER", "cost": 20},
+            {"name": "BLOCK", "cost": 5},
+            {"name": "LIFE", "cost": 100},
+            {"name": "Loot Box", "cost": 10}
         ]
 
         raw_bg_image = pygame.image.load('graphics/shop.png')
@@ -60,8 +60,7 @@ class ShopState(BaseState):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    g_state_machine.Change('play')
 
         for i, button in enumerate(self.item_buttons):
             if button.rect.collidepoint(mouse_x, mouse_y):
