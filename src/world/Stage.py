@@ -85,7 +85,8 @@ class Stage:
     def GenerateEntities(self, wave=1):
         #self.geckoQueue.append(...)
         self.state = 1
-        self.geckos.append(Gecko(template_id=random.randint(1,3)))
+        self.geckos.append(Gecko(template_id=random.randint(1,4))) #change here
+        print(self.geckos[-1].templates)
         pass
 
     def placeObject(self, row, col, type):      # Blockade
