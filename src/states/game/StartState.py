@@ -29,7 +29,8 @@ class StartState(BaseState):
             'SNIPER': 1,
             'BLOCK': 30,
             'LOOT BOX': 0,
-            'MONEY':4
+            'MONEY':4,
+            'RESET': True
         })
 
         # Process input events
